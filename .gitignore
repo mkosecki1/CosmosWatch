@@ -28,5 +28,5 @@ keystore.properties
 # (uncomment once Paparazzi/Roborazzi is added, if you keep goldens out of git)
 # **/build/reports/paparazzi/
 
-# Wewnętrzny plan architektury — notatki robocze, nie część publicznego portfolio repo
+# Internal architecture plan — working notes, not part of the public portfolio repo
 /ARCHITECTURE.md
