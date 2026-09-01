@@ -1,0 +1,32 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Signing / secrets — never commit these
+*.jks
+*.keystore
+keystore.properties
+
+# Kotlin / build tooling caches
+.kotlin/
+.konan/
+*.hprof
+
+# Screenshot-test golden images differ per OS/JDK — generate locally, don't fight them in review
+# (uncomment once Paparazzi/Roborazzi is added, if you keep goldens out of git)
+# **/build/reports/paparazzi/
+
+# Wewnętrzny plan architektury — notatki robocze, nie część publicznego portfolio repo
+/ARCHITECTURE.md
