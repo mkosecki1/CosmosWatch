@@ -22,23 +22,23 @@ gradlePlugin {
     plugins {
         register("androidLibrary") {
             id = "cosmoswatch.android.library"
-            implementationClass = "AndroidLibraryConventionPlugin"
+            implementationClass = "com.cosmoswatch.buildlogic.convention.AndroidLibraryConventionPlugin"
         }
         register("androidFeature") {
             id = "cosmoswatch.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+            implementationClass = "com.cosmoswatch.buildlogic.convention.AndroidFeatureConventionPlugin"
         }
         register("compose") {
             id = "cosmoswatch.compose"
-            implementationClass = "ComposeConventionPlugin"
+            implementationClass = "com.cosmoswatch.buildlogic.convention.ComposeConventionPlugin"
         }
         register("hilt") {
             id = "cosmoswatch.hilt"
-            implementationClass = "HiltConventionPlugin"
+            implementationClass = "com.cosmoswatch.buildlogic.convention.HiltConventionPlugin"
         }
         register("testing") {
             id = "cosmoswatch.testing"
-            implementationClass = "TestingConventionPlugin"
+            implementationClass = "com.cosmoswatch.buildlogic.convention.TestingConventionPlugin"
         }
     }
 }
