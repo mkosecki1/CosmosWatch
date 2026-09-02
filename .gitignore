@@ -28,5 +28,9 @@ keystore.properties
 # (uncomment once Paparazzi/Roborazzi is added, if you keep goldens out of git)
 # **/build/reports/paparazzi/
 
-# Internal architecture plan — working notes, not part of the public portfolio repo
+# Internal architecture plan and working notes, not part of the public portfolio repo
 /ARCHITECTURE.md
+/CLAUDE.md
+
+# Claude Code personal/local settings — not shared with the team
+/.claude/settings.local.json
