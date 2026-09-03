@@ -13,9 +13,6 @@ android {
         buildConfig = true
     }
 
-    // NASA_API_KEY is read from local.properties (gitignored) so it never lands in the
-    // public repo. Falls back to NASA's public rate-limited DEMO_KEY, e.g. for CI builds
-    // that don't have a local.properties with a personal key.
     val localProperties = Properties().apply {
         val propertiesFile = rootProject.file("local.properties")
         if (propertiesFile.exists()) {
