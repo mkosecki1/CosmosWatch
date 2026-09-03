@@ -18,25 +18,27 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.Clock
+import java.time.Duration
+import java.time.Instant
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val MAX_FETCH_ATTEMPTS = 3
 private const val INITIAL_RETRY_DELAY_MILLIS = 1_000L
+private val CACHE_TTL: Duration = Duration.ofHours(12)
 
 class ApodRepositoryImpl @Inject constructor(
     private val api: ApodApi,
     private val dao: ApodDao,
+    private val clock: Clock,
 ) : ApodRepository {
 
     override fun getApod(): Flow<AppResult<ApodDomain>> = flow {
         val cached = dao.observe().first()
-        val today = todayDateString()
 
-        if (isStale(cached, today)) {
-            val refreshError = refreshFromNetwork(today)
+        if (isStale(cached)) {
+            val refreshError = refreshFromNetwork()
             if (refreshError != null && cached == null) {
                 emit(AppResult.Failure(refreshError))
                 return@flow
@@ -46,13 +48,15 @@ class ApodRepositoryImpl @Inject constructor(
         emitAll(observeAsResult())
     }
 
-    private fun todayDateString(): String = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+    private fun isStale(cached: ApodEntity?): Boolean {
+        if (cached == null) return true
+        val age = Duration.between(Instant.ofEpochMilli(cached.fetchedAtEpochMillis), clock.instant())
+        return age >= CACHE_TTL
+    }
 
-    private fun isStale(cached: ApodEntity?, today: String): Boolean = cached == null || cached.date != today
-
-    private suspend fun refreshFromNetwork(date: String): AppError? = try {
-        val dto = fetchWithRetry(date)
-        dao.insertOrReplace(dto.toEntity())
+    private suspend fun refreshFromNetwork(): AppError? = try {
+        val dto = fetchWithRetry()
+        dao.insertOrReplace(dto.toEntity(fetchedAtEpochMillis = clock.millis()))
         null
     } catch (e: IOException) {
         AppError.Network
@@ -70,11 +74,11 @@ class ApodRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun fetchWithRetry(date: String): ApodDto {
+    private suspend fun fetchWithRetry(): ApodDto {
         var attempt = 0
         while (true) {
             try {
-                return api.getApod(date = date)
+                return api.getApod()
             } catch (e: IOException) {
                 attempt++
                 if (attempt >= MAX_FETCH_ATTEMPTS) throw e
