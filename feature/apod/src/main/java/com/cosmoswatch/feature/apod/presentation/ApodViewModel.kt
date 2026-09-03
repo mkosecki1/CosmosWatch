@@ -3,7 +3,7 @@ package com.cosmoswatch.feature.apod.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cosmoswatch.core.common.result.AppResult
-import com.cosmoswatch.feature.apod.domain.usecase.GetApodUseCase
+import com.cosmoswatch.feature.apod.domain.ApodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +21,14 @@ private const val STATE_SHARING_TIMEOUT_MILLIS = 5_000L
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ApodViewModel @Inject constructor(
-    private val getApodUseCase: GetApodUseCase,
+    private val repository: ApodRepository,
 ) : ViewModel() {
 
     private val retryTrigger = MutableStateFlow(0)
 
     val state: StateFlow<ApodState> = retryTrigger
         .flatMapLatest {
-            getApodUseCase()
+            repository.getApod()
                 .map { result ->
                     when (result) {
                         is AppResult.Success -> ApodState.Success(result.data)

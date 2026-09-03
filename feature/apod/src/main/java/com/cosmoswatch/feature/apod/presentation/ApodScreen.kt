@@ -107,4 +107,5 @@ private fun AppError.toMessage(): String = when (this) {
     AppError.Network -> stringResource(R.string.apod_error_network)
     is AppError.Server -> stringResource(R.string.apod_error_server)
     is AppError.Unknown -> stringResource(R.string.apod_error_unknown)
+    is AppError.Validation -> stringResource(R.string.apod_error_unknown)
 }

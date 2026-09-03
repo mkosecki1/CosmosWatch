@@ -6,7 +6,7 @@ import com.cosmoswatch.core.common.result.AppResult
 import com.cosmoswatch.core.testing.MainDispatcherExtension
 import com.cosmoswatch.feature.apod.domain.ApodDomain
 import com.cosmoswatch.feature.apod.domain.ApodMediaType
-import com.cosmoswatch.feature.apod.domain.usecase.GetApodUseCase
+import com.cosmoswatch.feature.apod.domain.ApodRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -36,9 +36,9 @@ class ApodViewModelTest {
 
     @Test
     fun `state starts with Loading then reflects Success`() = runTest {
-        val useCase = mockk<GetApodUseCase>()
-        every { useCase() } returns flow { emit(AppResult.Success(sampleApod)) }
-        val viewModel = ApodViewModel(useCase)
+        val repository = mockk<ApodRepository>()
+        every { repository.getApod() } returns flow { emit(AppResult.Success(sampleApod)) }
+        val viewModel = ApodViewModel(repository)
 
         viewModel.state.test {
             assertEquals(ApodState.Loading, awaitItem())
@@ -49,9 +49,9 @@ class ApodViewModelTest {
 
     @Test
     fun `state reflects Failure as Error`() = runTest {
-        val useCase = mockk<GetApodUseCase>()
-        every { useCase() } returns flow { emit(AppResult.Failure(AppError.Network)) }
-        val viewModel = ApodViewModel(useCase)
+        val repository = mockk<ApodRepository>()
+        every { repository.getApod() } returns flow { emit(AppResult.Failure(AppError.Network)) }
+        val viewModel = ApodViewModel(repository)
 
         viewModel.state.test {
             assertEquals(ApodState.Loading, awaitItem())
@@ -61,14 +61,14 @@ class ApodViewModelTest {
     }
 
     @Test
-    fun `retry intent resubscribes to the use case`() = runTest {
-        val useCase = mockk<GetApodUseCase>()
+    fun `retry intent resubscribes to the repository`() = runTest {
+        val repository = mockk<ApodRepository>()
         var callCount = 0
-        every { useCase() } answers {
+        every { repository.getApod() } answers {
             callCount++
             flow { emit(AppResult.Success(sampleApod)) }
         }
-        val viewModel = ApodViewModel(useCase)
+        val viewModel = ApodViewModel(repository)
 
         viewModel.state.test {
             awaitItem()
