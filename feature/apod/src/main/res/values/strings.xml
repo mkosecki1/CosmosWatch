@@ -1,0 +1,8 @@
+<resources>
+    <string name="apod_error_network">No internet connection. Check your connection and try again.</string>
+    <string name="apod_error_server">Something went wrong on NASA\'s end. Please try again later.</string>
+    <string name="apod_error_unknown">Something went wrong. Please try again.</string>
+    <string name="apod_retry">Retry</string>
+    <string name="apod_watch_video">Watch video</string>
+    <string name="apod_copyright">© %1$s</string>
+</resources>
