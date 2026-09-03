@@ -18,6 +18,7 @@ class TestingConventionPlugin : Plugin<Project> {
                 add("testImplementation", libs.findLibrary("mockk").get())
                 add("testImplementation", libs.findLibrary("turbine").get())
                 add("testImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
+                add("testRuntimeOnly", libs.findLibrary("junit-platform-launcher").get())
             }
 
             tasks.withType<Test>().configureEach {
