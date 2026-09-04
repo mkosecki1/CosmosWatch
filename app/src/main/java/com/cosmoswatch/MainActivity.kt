@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cosmoswatch.core.ui.theme.CosmosWatchTheme
 import com.cosmoswatch.feature.apod.presentation.ApodRoute
 import com.cosmoswatch.feature.apod.presentation.apodNavGraph
+import com.cosmoswatch.feature.marsphotos.presentation.navigation.marsPhotosNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = ApodRoute) {
                     apodNavGraph()
+                    marsPhotosNavGraph(navController)
                 }
             }
         }

@@ -5,11 +5,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MarsPhotoDao {
     @Query("SELECT * FROM mars_photo ORDER BY page ASC, photoId ASC")
     fun pagingSource(): PagingSource<Int, MarsPhotoEntity>
+
+    @Query("SELECT * FROM mars_photo WHERE photoId = :photoId")
+    fun observePhoto(photoId: Int): Flow<MarsPhotoEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(photos: List<MarsPhotoEntity>)

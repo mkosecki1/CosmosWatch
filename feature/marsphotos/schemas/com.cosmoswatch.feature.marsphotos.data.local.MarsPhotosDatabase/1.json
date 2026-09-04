@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a44999932c4267ab5be24e1f8c61e97d",
+    "identityHash": "c64fcfddf711317c8c77b4b94072b0b9",
     "entities": [
       {
         "tableName": "mars_photo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`photoId` INTEGER NOT NULL, `page` INTEGER NOT NULL, `sol` INTEGER NOT NULL, `earthDate` TEXT NOT NULL, `cameraName` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `roverApiName` TEXT NOT NULL, PRIMARY KEY(`photoId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`photoId` INTEGER NOT NULL, `page` INTEGER NOT NULL, `sol` INTEGER NOT NULL, `earthDate` TEXT NOT NULL, `cameraName` TEXT NOT NULL, `cameraFullName` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `roverApiName` TEXT NOT NULL, PRIMARY KEY(`photoId`))",
         "fields": [
           {
             "fieldPath": "photoId",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "cameraName",
             "columnName": "cameraName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cameraFullName",
+            "columnName": "cameraFullName",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -95,7 +101,7 @@
       },
       {
         "tableName": "mars_photo_manifest",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roverApiName` TEXT NOT NULL, `maxEarthDate` TEXT NOT NULL, `fetchedAtEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`roverApiName`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roverApiName` TEXT NOT NULL, `maxEarthDate` TEXT NOT NULL, `status` TEXT NOT NULL, `fetchedAtEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`roverApiName`))",
         "fields": [
           {
             "fieldPath": "roverApiName",
@@ -106,6 +112,12 @@
           {
             "fieldPath": "maxEarthDate",
             "columnName": "maxEarthDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -126,7 +138,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a44999932c4267ab5be24e1f8c61e97d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c64fcfddf711317c8c77b4b94072b0b9')"
     ]
   }
 }

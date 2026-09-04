@@ -11,4 +11,5 @@ data class MarsPhotoManifestResponseDto(
 @Serializable
 data class MarsPhotoManifestDto(
     @SerialName("max_date") val maxDate: String,
+    val status: String,
 )

@@ -10,6 +10,7 @@ data class MarsPhotoEntity(
     val sol: Int,
     val earthDate: String,
     val cameraName: String,
+    val cameraFullName: String,
     val imageUrl: String,
     val roverApiName: String,
 )

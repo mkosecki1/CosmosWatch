@@ -8,5 +8,6 @@ data class MarsPhotoDomain(
     val earthDate: LocalDate,
     val sol: Int,
     val cameraName: String,
+    val cameraFullName: String,
     val rover: MarsRover,
 )

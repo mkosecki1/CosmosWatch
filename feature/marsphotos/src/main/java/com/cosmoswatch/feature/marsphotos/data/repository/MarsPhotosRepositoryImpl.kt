@@ -18,6 +18,7 @@ import com.cosmoswatch.feature.marsphotos.domain.MarsPhotoDomain
 import com.cosmoswatch.feature.marsphotos.domain.MarsPhotoFilter
 import com.cosmoswatch.feature.marsphotos.domain.MarsPhotosRepository
 import com.cosmoswatch.feature.marsphotos.domain.MarsRover
+import com.cosmoswatch.feature.marsphotos.domain.MarsRoverManifest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -29,7 +30,6 @@ import java.io.IOException
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -53,7 +53,10 @@ class MarsPhotosRepositoryImpl @Inject constructor(
         pagingSourceFactory = { database.marsPhotoDao().pagingSource() },
     ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
-    override fun getLatestAvailablePhotoDate(rover: MarsRover): Flow<AppResult<LocalDate>> = flow {
+    override fun observePhoto(photoId: Int): Flow<MarsPhotoDomain?> =
+        database.marsPhotoDao().observePhoto(photoId).map { entity -> entity?.toDomain() }
+
+    override fun getRoverManifest(rover: MarsRover): Flow<AppResult<MarsRoverManifest>> = flow {
         val cached = manifestDao.observeManifest(rover.apiName).first()
 
         if (isStale(cached)) {
@@ -87,10 +90,10 @@ class MarsPhotosRepositoryImpl @Inject constructor(
         AppError.Unknown(e)
     }
 
-    private fun observeManifestAsResult(rover: MarsRover): Flow<AppResult<LocalDate>> =
+    private fun observeManifestAsResult(rover: MarsRover): Flow<AppResult<MarsRoverManifest>> =
         manifestDao.observeManifest(rover.apiName).map { entity ->
             if (entity != null) {
-                AppResult.Success(LocalDate.parse(entity.maxEarthDate))
+                AppResult.Success(entity.toDomain())
             } else {
                 AppResult.Failure(AppError.Unknown())
             }

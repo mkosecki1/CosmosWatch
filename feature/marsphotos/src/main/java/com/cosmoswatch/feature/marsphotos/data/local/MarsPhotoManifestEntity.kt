@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class MarsPhotoManifestEntity(
     @PrimaryKey val roverApiName: String,
     val maxEarthDate: String,
+    val status: String,
     val fetchedAtEpochMillis: Long,
 )

@@ -20,4 +20,5 @@ data class MarsPhotoDto(
 @Serializable
 data class MarsCameraDto(
     val name: String,
+    @SerialName("full_name") val fullName: String,
 )

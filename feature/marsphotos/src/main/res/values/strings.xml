@@ -1,0 +1,19 @@
+<resources>
+    <string name="marsphotos_retry">Retry</string>
+    <string name="marsphotos_error_network">No internet connection. Check your connection and try again.</string>
+    <string name="marsphotos_error_server">Something went wrong on NASA\'s end. Please try again later.</string>
+    <string name="marsphotos_error_unknown">Something went wrong. Please try again.</string>
+    <string name="marsphotos_camera_all">All</string>
+    <string name="marsphotos_status_and_landed">%1$s · landed %2$s</string>
+    <string name="marsphotos_status_active">Active</string>
+    <string name="marsphotos_status_complete">Complete</string>
+    <string name="marsphotos_sol_and_date">Sol %1$d · %2$s</string>
+    <string name="marsphotos_previous_day">Previous day</string>
+    <string name="marsphotos_next_day">Next day</string>
+    <string name="marsphotos_pick_date">Pick a date</string>
+    <string name="marsphotos_back">Back</string>
+    <string name="marsphotos_confirm">OK</string>
+    <string name="marsphotos_cancel">Cancel</string>
+    <string name="marsphotos_detail_not_available">This photo couldn\'t be loaded. Please go back and try again.</string>
+    <string name="marsphotos_sol_date_rover">Sol %1$d · %2$s · %3$s</string>
+</resources>

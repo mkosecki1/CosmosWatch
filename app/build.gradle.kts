@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:apod"))
+    implementation(project(":feature:marsphotos"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

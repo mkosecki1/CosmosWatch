@@ -13,6 +13,8 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:ui"))
     implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
