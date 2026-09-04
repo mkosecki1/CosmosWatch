@@ -70,6 +70,7 @@ coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp"
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 # Used only by build-logic/convention to write convention plugins against the AGP/Kotlin APIs.
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
