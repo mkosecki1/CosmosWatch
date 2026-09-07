@@ -3,6 +3,7 @@ package com.cosmoswatch.feature.apod.data.repository
 import app.cash.turbine.test
 import com.cosmoswatch.core.common.result.AppError
 import com.cosmoswatch.core.common.result.AppResult
+import com.cosmoswatch.feature.apod.data.local.ApodDatabase
 import com.cosmoswatch.feature.apod.data.local.ApodEntity
 import com.cosmoswatch.feature.apod.data.local.FakeApodDao
 import com.cosmoswatch.feature.apod.data.mapper.toDomain
@@ -51,8 +52,10 @@ private fun sampleEntity(fetchedAt: Instant) = ApodEntity(
 class ApodRepositoryImplTest {
 
     private val api = mockk<ApodApi>()
+    private val database = mockk<ApodDatabase>(relaxed = true)
 
-    private fun repository(dao: FakeApodDao) = ApodRepositoryImpl(api = api, dao = dao, clock = FIXED_CLOCK)
+    private fun repository(dao: FakeApodDao) =
+        ApodRepositoryImpl(api = api, dao = dao, database = database, clock = FIXED_CLOCK)
 
     @Test
     fun `no cache and successful fetch emits Success and stores in dao`() = runTest {

@@ -1,13 +1,21 @@
 package com.cosmoswatch.feature.apod.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.cosmoswatch.core.common.result.AppError
 import com.cosmoswatch.core.common.result.AppResult
 import com.cosmoswatch.feature.apod.data.local.ApodDao
+import com.cosmoswatch.feature.apod.data.local.ApodDatabase
 import com.cosmoswatch.feature.apod.data.local.ApodEntity
 import com.cosmoswatch.feature.apod.data.mapper.toDomain
 import com.cosmoswatch.feature.apod.data.mapper.toEntity
 import com.cosmoswatch.feature.apod.data.remote.ApodApi
+import com.cosmoswatch.feature.apod.data.remote.ApodArchiveRemoteMediator
 import com.cosmoswatch.feature.apod.data.remote.ApodDto
+import com.cosmoswatch.feature.apod.domain.ApodArchiveFilter
 import com.cosmoswatch.feature.apod.domain.ApodDomain
 import com.cosmoswatch.feature.apod.domain.ApodRepository
 import kotlinx.coroutines.delay
@@ -27,12 +35,21 @@ import kotlin.time.Duration.Companion.milliseconds
 private const val MAX_FETCH_ATTEMPTS = 3
 private const val INITIAL_RETRY_DELAY_MILLIS = 1_000L
 private val CACHE_TTL: Duration = Duration.ofHours(12)
+private const val ARCHIVE_PAGE_SIZE = 20
 
 class ApodRepositoryImpl @Inject constructor(
     private val api: ApodApi,
     private val dao: ApodDao,
+    private val database: ApodDatabase,
     private val clock: Clock,
 ) : ApodRepository {
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getArchive(filter: ApodArchiveFilter): Flow<PagingData<ApodDomain>> = Pager(
+        config = PagingConfig(pageSize = ARCHIVE_PAGE_SIZE, enablePlaceholders = false),
+        remoteMediator = ApodArchiveRemoteMediator(api = api, database = database, clock = clock, filter = filter),
+        pagingSourceFactory = { database.apodArchiveDao().pagingSource() },
+    ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
     override fun getApod(): Flow<AppResult<ApodDomain>> = flow {
         val cached = dao.observe().first()
