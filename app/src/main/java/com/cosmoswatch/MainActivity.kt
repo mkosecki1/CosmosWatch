@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.cosmoswatch.core.ui.theme.CosmosWatchTheme
-import com.cosmoswatch.feature.apod.presentation.ApodRoute
-import com.cosmoswatch.feature.apod.presentation.apodNavGraph
+import com.cosmoswatch.feature.apod.presentation.daily.ApodRoute
+import com.cosmoswatch.feature.apod.presentation.navigation.apodNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             CosmosWatchTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = ApodRoute) {
-                    apodNavGraph()
+                    apodNavGraph(navController)
                 }
             }
         }

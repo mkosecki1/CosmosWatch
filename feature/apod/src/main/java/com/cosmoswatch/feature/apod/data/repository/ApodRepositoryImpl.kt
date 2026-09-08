@@ -29,6 +29,7 @@ import java.io.IOException
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -50,6 +51,9 @@ class ApodRepositoryImpl @Inject constructor(
         remoteMediator = ApodArchiveRemoteMediator(api = api, database = database, clock = clock, filter = filter),
         pagingSourceFactory = { database.apodArchiveDao().pagingSource() },
     ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
+
+    override fun observeArchiveEntry(date: LocalDate): Flow<ApodDomain?> =
+        database.apodArchiveDao().observe(date.toString()).map { entity -> entity?.toDomain() }
 
     override fun getApod(): Flow<AppResult<ApodDomain>> = flow {
         val cached = dao.observe().first()

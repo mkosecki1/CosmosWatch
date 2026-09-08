@@ -1,4 +1,4 @@
-package com.cosmoswatch.feature.apod.presentation
+package com.cosmoswatch.feature.apod.presentation.daily
 
 import com.cosmoswatch.core.common.result.AppError
 import com.cosmoswatch.feature.apod.domain.ApodDomain

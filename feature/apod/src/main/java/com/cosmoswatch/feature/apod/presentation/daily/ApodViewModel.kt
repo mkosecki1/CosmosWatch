@@ -1,4 +1,4 @@
-package com.cosmoswatch.feature.apod.presentation
+package com.cosmoswatch.feature.apod.presentation.daily
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

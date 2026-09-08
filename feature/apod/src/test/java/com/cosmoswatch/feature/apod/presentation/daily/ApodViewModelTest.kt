@@ -1,4 +1,4 @@
-package com.cosmoswatch.feature.apod.presentation
+package com.cosmoswatch.feature.apod.presentation.daily
 
 import app.cash.turbine.test
 import com.cosmoswatch.core.common.result.AppError

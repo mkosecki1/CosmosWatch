@@ -5,11 +5,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ApodArchiveDao {
     @Query("SELECT * FROM apod_archive ORDER BY date DESC")
     fun pagingSource(): PagingSource<Int, ApodArchiveEntity>
+
+    @Query("SELECT * FROM apod_archive WHERE date = :date")
+    fun observe(date: String): Flow<ApodArchiveEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<ApodArchiveEntity>)
