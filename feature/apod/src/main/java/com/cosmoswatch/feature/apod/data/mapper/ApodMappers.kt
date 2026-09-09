@@ -15,6 +15,7 @@ fun ApodDto.toArchiveEntity(page: Int): ApodArchiveEntity = ApodArchiveEntity(
     hdImageUrl = hdurl,
     mediaType = mediaType,
     copyright = copyright,
+    thumbnailUrl = thumbnailUrl?.takeIf { it.isNotBlank() },
     page = page,
 )
 
@@ -26,6 +27,7 @@ fun ApodArchiveEntity.toDomain(): ApodDomain = ApodDomain(
     hdImageUrl = hdImageUrl,
     mediaType = if (mediaType == "video") ApodMediaType.VIDEO else ApodMediaType.IMAGE,
     copyright = copyright,
+    thumbnailUrl = thumbnailUrl,
 )
 
 fun ApodDto.toEntity(fetchedAtEpochMillis: Long): ApodEntity = ApodEntity(
@@ -36,6 +38,7 @@ fun ApodDto.toEntity(fetchedAtEpochMillis: Long): ApodEntity = ApodEntity(
     hdImageUrl = hdurl,
     mediaType = mediaType,
     copyright = copyright,
+    thumbnailUrl = thumbnailUrl?.takeIf { it.isNotBlank() },
     fetchedAtEpochMillis = fetchedAtEpochMillis,
 )
 
@@ -47,4 +50,5 @@ fun ApodEntity.toDomain(): ApodDomain = ApodDomain(
     hdImageUrl = hdImageUrl,
     mediaType = if (mediaType == "video") ApodMediaType.VIDEO else ApodMediaType.IMAGE,
     copyright = copyright,
+    thumbnailUrl = thumbnailUrl,
 )

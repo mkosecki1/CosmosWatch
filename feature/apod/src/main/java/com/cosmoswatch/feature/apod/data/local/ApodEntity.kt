@@ -13,6 +13,7 @@ data class ApodEntity(
     val hdImageUrl: String?,
     val mediaType: String,
     val copyright: String?,
+    val thumbnailUrl: String?,
     val fetchedAtEpochMillis: Long,
 ) {
     companion object {

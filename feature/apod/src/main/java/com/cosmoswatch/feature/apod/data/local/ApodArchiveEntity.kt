@@ -12,5 +12,6 @@ data class ApodArchiveEntity(
     val hdImageUrl: String?,
     val mediaType: String,
     val copyright: String?,
+    val thumbnailUrl: String?,
     val page: Int,
 )

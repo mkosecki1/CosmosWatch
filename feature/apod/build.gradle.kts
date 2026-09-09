@@ -18,6 +18,9 @@ dependencies {
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui.compose.material3)
+    implementation(libs.androidx.media3.session)
     ksp(libs.androidx.room.compiler)
 
     testImplementation(project(":core:testing"))

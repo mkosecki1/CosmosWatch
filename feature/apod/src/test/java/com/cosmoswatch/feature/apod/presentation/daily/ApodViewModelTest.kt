@@ -32,6 +32,7 @@ class ApodViewModelTest {
         hdImageUrl = null,
         mediaType = ApodMediaType.IMAGE,
         copyright = null,
+        thumbnailUrl = null,
     )
 
     @Test

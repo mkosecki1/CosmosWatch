@@ -41,7 +41,6 @@ class ApodArchiveRemoteMediator(
 
         return try {
             val entries = api.getApodRange(startDate = range.start.toString(), endDate = range.end.toString())
-                .filter { it.mediaType == "image" }
             val page = pageToLoad(loadType, currentKey)
             val endOfPaginationReached = range.start <= boundaryStartDate
             persistPage(loadType, page, entries, range.start, endOfPaginationReached, currentKey)

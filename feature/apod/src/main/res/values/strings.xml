@@ -19,4 +19,5 @@
     <string name="apod_archive_cancel">Cancel</string>
     <string name="apod_archive_empty">No photos in this range</string>
     <string name="apod_archive_detail_not_available">This entry isn\'t available</string>
+    <string name="apod_archive_video_icon">This item contains video</string>
 </resources>

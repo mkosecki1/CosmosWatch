@@ -10,4 +10,8 @@ data class ApodDomain(
     val hdImageUrl: String?,
     val mediaType: ApodMediaType,
     val copyright: String?,
+    val thumbnailUrl: String?,
 )
+
+fun ApodDomain.isPlayableVideo(): Boolean =
+    mediaType == ApodMediaType.VIDEO && !imageUrl.contains("youtube.com")

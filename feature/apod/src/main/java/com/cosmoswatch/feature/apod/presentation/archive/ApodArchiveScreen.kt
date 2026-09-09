@@ -1,5 +1,6 @@
 package com.cosmoswatch.feature.apod.presentation.archive
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,8 @@ import com.cosmoswatch.feature.apod.R
 import com.cosmoswatch.feature.apod.domain.APOD_ARCHIVE_START_DATE
 import com.cosmoswatch.feature.apod.domain.ApodArchiveFilter
 import com.cosmoswatch.feature.apod.domain.ApodDomain
+import com.cosmoswatch.feature.apod.domain.ApodMediaType
+import com.cosmoswatch.feature.apod.presentation.common.VideoPlayOverlay
 import com.cosmoswatch.feature.apod.presentation.common.toEpochMillisUtc
 import com.cosmoswatch.feature.apod.presentation.common.toLocalDateUtc
 import com.cosmoswatch.feature.apod.presentation.common.toMessage
@@ -264,13 +267,7 @@ private fun ArchiveRow(entry: ApodDomain, onClick: () -> Unit, modifier: Modifie
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        CosmosWatchAsyncImage(
-            model = entry.imageUrl,
-            contentDescription = entry.title,
-            modifier = Modifier
-                .size(88.dp)
-                .clip(RoundedCornerShape(14.dp)),
-        )
+        ArchiveThumbnail(entry = entry, modifier = Modifier.size(88.dp))
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(3.dp),
@@ -286,12 +283,42 @@ private fun ArchiveRow(entry: ApodDomain, onClick: () -> Unit, modifier: Modifie
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(
-                text = entry.explanation,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+        }
+    }
+}
+
+@Composable
+private fun ArchiveThumbnail(entry: ApodDomain, modifier: Modifier = Modifier) {
+    val thumbnailModel = when (entry.mediaType) {
+        ApodMediaType.IMAGE -> entry.imageUrl
+        ApodMediaType.VIDEO -> entry.thumbnailUrl
+    }
+
+    Box(modifier = modifier.clip(RoundedCornerShape(14.dp))) {
+        if (thumbnailModel != null) {
+            CosmosWatchAsyncImage(
+                model = thumbnailModel,
+                contentDescription = entry.title,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                MaterialTheme.colorScheme.primaryContainer,
+                            ),
+                        ),
+                    ),
+            )
+        }
+        if (entry.mediaType == ApodMediaType.VIDEO) {
+            VideoPlayOverlay(
+                contentDescription = stringResource(R.string.apod_archive_video_icon),
+                modifier = Modifier.align(Alignment.Center),
             )
         }
     }

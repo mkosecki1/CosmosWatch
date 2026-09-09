@@ -12,4 +12,5 @@ data class ApodDto(
     val hdurl: String? = null,
     @SerialName("media_type") val mediaType: String,
     val copyright: String? = null,
+    @SerialName("thumbnail_url") val thumbnailUrl: String? = null,
 )

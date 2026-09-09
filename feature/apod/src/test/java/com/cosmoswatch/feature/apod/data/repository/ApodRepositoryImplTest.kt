@@ -46,6 +46,7 @@ private fun sampleEntity(fetchedAt: Instant) = ApodEntity(
     hdImageUrl = null,
     mediaType = "image",
     copyright = null,
+    thumbnailUrl = null,
     fetchedAtEpochMillis = fetchedAt.toEpochMilli(),
 )
 
