@@ -14,10 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
+import com.cosmoswatch.core.ui.theme.Fraunces
+import com.cosmoswatch.core.ui.theme.FrauncesWeightWordmark
 import com.cosmoswatch.feature.apod.R
 import com.cosmoswatch.feature.apod.presentation.common.ApodContent
 import com.cosmoswatch.feature.apod.presentation.common.toMessage
@@ -53,7 +57,10 @@ private fun ApodScreenContent(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.apod_title)) },
+                title = { Text(
+                    text = stringResource(R.string.apod_title),
+                    style =  TextStyle(fontSize = 18.sp),
+                ) },
                 actions = {
                     IconButton(onClick = onArchiveClick) {
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.apod_browse_archive))
@@ -74,6 +81,7 @@ private fun ApodScreenContent(
                 apod = state.apod,
                 onImageClick = onImageClick,
                 modifier = Modifier.padding(innerPadding),
+                showTodayBadge = true
             )
         }
     }

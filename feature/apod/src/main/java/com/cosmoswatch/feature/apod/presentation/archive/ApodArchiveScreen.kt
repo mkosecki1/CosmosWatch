@@ -1,5 +1,6 @@
 package com.cosmoswatch.feature.apod.presentation.archive
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,16 +8,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -26,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -39,9 +43,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -50,6 +57,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
+import com.cosmoswatch.core.ui.theme.OnAccentPrimary
+import com.cosmoswatch.core.ui.theme.VideoTagTextStyle
 import com.cosmoswatch.feature.apod.R
 import com.cosmoswatch.feature.apod.domain.APOD_ARCHIVE_START_DATE
 import com.cosmoswatch.feature.apod.domain.ApodArchiveFilter
@@ -106,15 +115,25 @@ private fun ApodArchiveScreenContent(
                 },
                 actions = {
                     IconButton(onClick = { showFilterRow = !showFilterRow }) {
-                        Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.apod_archive_filter))
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_filter),
+                            contentDescription = stringResource(R.string.apod_archive_filter),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
             )
         },
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            if (showFilterRow) {
-                FilterRow(filter = state.filter, onIntent = onIntent)
+            AnimatedVisibility(visible = showFilterRow) {
+                Column {
+                    DateFilterRow(filter = state.filter, onIntent = onIntent)
+                    MediaTypeFilterRow(
+                        selected = state.filter.mediaType,
+                        onSelected = { onIntent(ApodArchiveIntent.FilterChanged(state.filter.copy(mediaType = it))) }
+                    )
+                }
             }
 
             when {
@@ -141,7 +160,7 @@ private fun ApodArchiveScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveIntent) -> Unit, modifier: Modifier = Modifier) {
+private fun DateFilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveIntent) -> Unit, modifier: Modifier = Modifier) {
     var pickingStart by remember { mutableStateOf(false) }
     var pickingEnd by remember { mutableStateOf(false) }
 
@@ -150,23 +169,17 @@ private fun FilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveIntent) -
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TextButton(onClick = { pickingStart = true }, modifier = Modifier.weight(1f)) {
-            Text(
-                text = filter.startDate?.let { stringResource(R.string.apod_archive_filter_from, it.iso()) }
-                    ?: stringResource(R.string.apod_archive_filter_from_unset),
-            )
-        }
-        TextButton(onClick = { pickingEnd = true }, modifier = Modifier.weight(1f)) {
-            Text(
-                text = filter.endDate?.let { stringResource(R.string.apod_archive_filter_to, it.iso()) }
-                    ?: stringResource(R.string.apod_archive_filter_to_unset),
-            )
-        }
-        if (filter.startDate != null || filter.endDate != null) {
-            IconButton(onClick = { onIntent(ApodArchiveIntent.ClearFilter) }) {
-                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.apod_archive_clear_filter))
-            }
-        }
+        ClearFilterChip(onClick = { onIntent(ApodArchiveIntent.ClearFilter) })
+        DateFilterChip(
+            label = filter.startDate?.iso() ?: stringResource(R.string.apod_archive_filter_from_unset),
+            onClick = { pickingStart = true },
+            modifier = Modifier.weight(1f)
+        )
+        DateFilterChip(
+            label = filter.endDate?.iso() ?: stringResource(R.string.apod_archive_filter_to_unset),
+            onClick = { pickingEnd = true },
+            modifier = Modifier.weight(1f)
+        )
     }
 
     if (pickingStart) {
@@ -192,6 +205,36 @@ private fun FilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveIntent) -
                 pickingEnd = false
             },
         )
+    }
+}
+
+@Composable
+private fun DateFilterChip(label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Row(
+            modifier = Modifier
+                .defaultMinSize(minHeight = 44.dp)
+                .padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DateRange,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 13.sp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
@@ -233,10 +276,69 @@ private fun DateBoundPickerDialog(
 }
 
 @Composable
+private fun MediaTypeFilterRow(selected: ApodMediaType?, onSelected: (ApodMediaType?) -> Unit, modifier: Modifier = Modifier) {
+    val options = listOf(null, ApodMediaType.IMAGE, ApodMediaType.VIDEO)
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        options.forEachIndexed { index, type ->
+            MediaTypeChip(
+                label = when (type) {
+                    null -> stringResource(R.string.apod_archive_filter_all)
+                    ApodMediaType.IMAGE -> stringResource(R.string.apod_archive_filter_photos)
+                    ApodMediaType.VIDEO -> stringResource(R.string.apod_archive_filter_videos) },
+                selected = selected == type,
+                onClick = { onSelected(type) },
+                modifier = modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MediaTypeChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small,
+        color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Box(
+            modifier = Modifier.defaultMinSize(minHeight = 40.dp).padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+          Text(
+              text = label,
+              style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 13.sp),
+              color = if (selected) MaterialTheme.colorScheme.onPrimary else  MaterialTheme.colorScheme.onSurface,
+          )
+        }
+
+    }
+}
+
+@Composable
+private fun ClearFilterChip(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.size(40.dp),
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.onSurface,
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Filled.Clear,
+                contentDescription = stringResource(R.string.apod_archive_clear_filter),
+                tint = OnAccentPrimary
+            )
+        }
+    }
+}
+
+@Composable
 private fun ArchiveList(archive: LazyPagingItems<ApodDomain>, onEntryClick: (LocalDate) -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(
             count = archive.itemCount,
@@ -266,23 +368,32 @@ private fun ArchiveRow(entry: ApodDomain, onClick: () -> Unit, modifier: Modifie
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         ArchiveThumbnail(entry = entry, modifier = Modifier.size(88.dp))
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = entry.title,
                 style = MaterialTheme.typography.titleSmall,
-                maxLines = 2,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                text = entry.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = entry.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (entry.mediaType == ApodMediaType.VIDEO) {
+                    VideoTag()
+                }
+            }
         }
     }
 }
@@ -294,7 +405,7 @@ private fun ArchiveThumbnail(entry: ApodDomain, modifier: Modifier = Modifier) {
         ApodMediaType.VIDEO -> entry.thumbnailUrl
     }
 
-    Box(modifier = modifier.clip(RoundedCornerShape(14.dp))) {
+    Box(modifier = modifier.clip(MaterialTheme.shapes.medium)) {
         if (thumbnailModel != null) {
             CosmosWatchAsyncImage(
                 model = thumbnailModel,
@@ -322,6 +433,19 @@ private fun ArchiveThumbnail(entry: ApodDomain, modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+@Composable
+private fun VideoTag(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.apod_archive_video_tag),
+        style = VideoTagTextStyle,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.extraSmall)
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.16f))
+            .padding(horizontal = 6.dp, vertical = 2.dp)
+    )
 }
 
 private fun LocalDate.iso(): String = format(DateTimeFormatter.ISO_LOCAL_DATE)

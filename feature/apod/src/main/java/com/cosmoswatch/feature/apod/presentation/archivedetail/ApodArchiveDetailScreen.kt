@@ -71,6 +71,7 @@ private fun ApodArchiveDetailScreenContent(
                 apod = state.apod,
                 onImageClick = onImageClick,
                 modifier = Modifier.padding(innerPadding),
+                showTodayBadge = false
             )
         }
     }

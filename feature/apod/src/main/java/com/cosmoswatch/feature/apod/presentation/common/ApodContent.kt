@@ -18,8 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -34,6 +36,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -56,7 +60,12 @@ import com.cosmoswatch.feature.apod.presentation.playback.ApodPlaybackService
 import java.time.format.DateTimeFormatter
 
 @Composable
-internal fun ApodContent(apod: ApodDomain, onImageClick: (String) -> Unit, modifier: Modifier = Modifier) {
+internal fun ApodContent(
+    apod: ApodDomain,
+    onImageClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    showTodayBadge: Boolean = false
+) {
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -69,15 +78,20 @@ internal fun ApodContent(apod: ApodDomain, onImageClick: (String) -> Unit, modif
         when {
             apod.mediaType == ApodMediaType.IMAGE -> {
                 val fullImageUrl = apod.hdImageUrl ?: apod.imageUrl
-                CosmosWatchAsyncImage(
-                    model = fullImageUrl,
-                    contentDescription = apod.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3f)
-                        .clip(RoundedCornerShape(16.dp))
-                        .clickable { onImageClick(fullImageUrl) },
-                )
+                Box {
+                    CosmosWatchAsyncImage(
+                        model = fullImageUrl,
+                        contentDescription = apod.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(4f / 3f)
+                            .clip(MaterialTheme.shapes.large)
+                            .clickable { onImageClick(fullImageUrl) },
+                    )
+                    if(showTodayBadge) {
+                        TodayBadge(Modifier.align(Alignment.TopStart).padding(12.dp))
+                    }
+                }
             }
             apod.isPlayableVideo() -> {
                 ApodVideoPlayer(
@@ -85,7 +99,7 @@ internal fun ApodContent(apod: ApodDomain, onImageClick: (String) -> Unit, modif
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .clip(MaterialTheme.shapes.large),
                 )
             }
             apod.thumbnailUrl != null -> {
@@ -93,7 +107,7 @@ internal fun ApodContent(apod: ApodDomain, onImageClick: (String) -> Unit, modif
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(MaterialTheme.shapes.large)
                         .clickable { uriHandler.openUri(apod.imageUrl) },
                 ) {
                     CosmosWatchAsyncImage(
@@ -117,16 +131,37 @@ internal fun ApodContent(apod: ApodDomain, onImageClick: (String) -> Unit, modif
                 )
             }
         }
-        Text(text = apod.title, style = MaterialTheme.typography.headlineSmall)
+        Text(
+            text = stringResource(R.string.apod_kicker_daily),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = apod.title,
+//            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.titleLarge
+        )
         Text(
             text = apod.date.format(DateTimeFormatter.ISO_LOCAL_DATE),
             style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary
         )
-        Text(text = apod.explanation, style = MaterialTheme.typography.bodyMedium)
+        Box(
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .size(width = 32.dp, height = 3.dp)
+                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
+        )
+        Text(
+            text = apod.explanation,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Justify
+        )
         apod.copyright?.let {
             Text(
-                text = stringResource(R.string.apod_copyright, it),
+                text = stringResource(R.string.apod_copyright, it.replace("\n", ", ")),
                 style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -188,6 +223,24 @@ private fun ApodVideoPlayer(videoUrl: String, modifier: Modifier = Modifier) {
                     forwardSecondary = {},
                 )
             },
+        )
+    }
+}
+
+@Composable
+private fun TodayBadge(modifier: Modifier = Modifier) {
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        shape = MaterialTheme.shapes.small,
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.apod_today_badge),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+
         )
     }
 }

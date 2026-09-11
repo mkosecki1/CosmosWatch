@@ -1,5 +1,7 @@
 <resources>
     <string name="apod_title">Astronomy Picture of the Day</string>
+    <string name="apod_kicker_daily">NASA APOD</string>
+    <string name="apod_today_badge">today</string>
     <string name="apod_error_network">No internet connection. Check your connection and try again.</string>
     <string name="apod_error_server">Something went wrong on NASA\'s end. Please try again later.</string>
     <string name="apod_error_unknown">Something went wrong. Please try again.</string>
@@ -15,9 +17,13 @@
     <string name="apod_archive_filter_from_unset">From</string>
     <string name="apod_archive_filter_to_unset">To</string>
     <string name="apod_archive_clear_filter">Clear filter</string>
+    <string name="apod_archive_filter_all">All</string>
+    <string name="apod_archive_filter_photos">Photos</string>
+    <string name="apod_archive_filter_videos">Videos</string>
     <string name="apod_archive_confirm">OK</string>
     <string name="apod_archive_cancel">Cancel</string>
     <string name="apod_archive_empty">No photos in this range</string>
     <string name="apod_archive_detail_not_available">This entry isn\'t available</string>
     <string name="apod_archive_video_icon">This item contains video</string>
+    <string name="apod_archive_video_tag">WIDEO</string>
 </resources>

@@ -52,3 +52,8 @@ fun ApodEntity.toDomain(): ApodDomain = ApodDomain(
     copyright = copyright,
     thumbnailUrl = thumbnailUrl,
 )
+
+fun ApodMediaType.toRaw(): String = when (this) {
+    ApodMediaType.IMAGE -> "image"
+    ApodMediaType.VIDEO -> "video"
+}

@@ -12,6 +12,7 @@ import com.cosmoswatch.feature.apod.data.local.ApodDatabase
 import com.cosmoswatch.feature.apod.data.local.ApodEntity
 import com.cosmoswatch.feature.apod.data.mapper.toDomain
 import com.cosmoswatch.feature.apod.data.mapper.toEntity
+import com.cosmoswatch.feature.apod.data.mapper.toRaw
 import com.cosmoswatch.feature.apod.data.remote.ApodApi
 import com.cosmoswatch.feature.apod.data.remote.ApodArchiveRemoteMediator
 import com.cosmoswatch.feature.apod.data.remote.ApodDto
@@ -49,7 +50,7 @@ class ApodRepositoryImpl @Inject constructor(
     override fun getArchive(filter: ApodArchiveFilter): Flow<PagingData<ApodDomain>> = Pager(
         config = PagingConfig(pageSize = ARCHIVE_PAGE_SIZE, enablePlaceholders = false),
         remoteMediator = ApodArchiveRemoteMediator(api = api, database = database, clock = clock, filter = filter),
-        pagingSourceFactory = { database.apodArchiveDao().pagingSource() },
+        pagingSourceFactory = { database.apodArchiveDao().pagingSource(filter.mediaType?.toRaw()) },
     ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
     override fun observeArchiveEntry(date: LocalDate): Flow<ApodDomain?> =
