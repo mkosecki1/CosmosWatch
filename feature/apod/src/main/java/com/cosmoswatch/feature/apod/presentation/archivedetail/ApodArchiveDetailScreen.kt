@@ -48,16 +48,6 @@ private fun ApodArchiveDetailScreenContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.apod_back))
-                    }
-                },
-            )
-        },
     ) { innerPadding ->
         when (state) {
             ApodArchiveDetailState.Loading -> LoadingState(modifier = Modifier.padding(innerPadding).fillMaxSize())
@@ -70,6 +60,7 @@ private fun ApodArchiveDetailScreenContent(
             is ApodArchiveDetailState.Content -> ApodContent(
                 apod = state.apod,
                 onImageClick = onImageClick,
+                onBackClick = onBackClick,
                 modifier = Modifier.padding(innerPadding),
                 showTodayBadge = false
             )

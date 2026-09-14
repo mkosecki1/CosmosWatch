@@ -17,9 +17,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -64,6 +66,7 @@ internal fun ApodContent(
     apod: ApodDomain,
     onImageClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onBackClick: (() -> Unit)? = null,
     showTodayBadge: Boolean = false
 ) {
     val uriHandler = LocalUriHandler.current
@@ -75,60 +78,78 @@ internal fun ApodContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        when {
-            apod.mediaType == ApodMediaType.IMAGE -> {
-                val fullImageUrl = apod.hdImageUrl ?: apod.imageUrl
-                Box {
-                    CosmosWatchAsyncImage(
-                        model = fullImageUrl,
-                        contentDescription = apod.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(4f / 3f)
-                            .clip(MaterialTheme.shapes.large)
-                            .clickable { onImageClick(fullImageUrl) },
-                    )
-                    if(showTodayBadge) {
-                        TodayBadge(Modifier.align(Alignment.TopStart).padding(12.dp))
+        Box {
+            when {
+                apod.mediaType == ApodMediaType.IMAGE -> {
+                    val fullImageUrl = apod.hdImageUrl ?: apod.imageUrl
+                    Box {
+                        CosmosWatchAsyncImage(
+                            model = fullImageUrl,
+                            contentDescription = apod.title,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(4f / 3f)
+                                .clip(MaterialTheme.shapes.large)
+                                .clickable { onImageClick(fullImageUrl) },
+                        )
+                        if(showTodayBadge) {
+                            TodayBadge(Modifier.align(Alignment.TopStart).padding(12.dp))
+                        }
                     }
                 }
-            }
-            apod.isPlayableVideo() -> {
-                ApodVideoPlayer(
-                    videoUrl = apod.imageUrl,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .clip(MaterialTheme.shapes.large),
-                )
-            }
-            apod.thumbnailUrl != null -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .clip(MaterialTheme.shapes.large)
-                        .clickable { uriHandler.openUri(apod.imageUrl) },
-                ) {
-                    CosmosWatchAsyncImage(
-                        model = apod.thumbnailUrl,
-                        contentDescription = apod.title,
-                        modifier = Modifier.fillMaxSize(),
+                apod.isPlayableVideo() -> {
+                    ApodVideoPlayer(
+                        videoUrl = apod.imageUrl,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 9f)
+                            .clip(MaterialTheme.shapes.large),
                     )
-                    VideoPlayOverlay(
-                        contentDescription = stringResource(R.string.apod_watch_video),
-                        modifier = Modifier.align(Alignment.Center),
-                        iconSize = 48.dp,
-                        iconPadding = 8.dp,
+                }
+                apod.thumbnailUrl != null -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 9f)
+                            .clip(MaterialTheme.shapes.large)
+                            .clickable { uriHandler.openUri(apod.imageUrl) },
+                    ) {
+                        CosmosWatchAsyncImage(
+                            model = apod.thumbnailUrl,
+                            contentDescription = apod.title,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                        VideoPlayOverlay(
+                            contentDescription = stringResource(R.string.apod_watch_video),
+                            modifier = Modifier.align(Alignment.Center),
+                            iconSize = 48.dp,
+                            iconPadding = 8.dp,
+                        )
+                    }
+                }
+                else -> {
+                    Text(
+                        text = stringResource(R.string.apod_watch_video),
+                        style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
+                        modifier = Modifier.clickable { uriHandler.openUri(apod.imageUrl) },
                     )
                 }
             }
-            else -> {
-                Text(
-                    text = stringResource(R.string.apod_watch_video),
-                    style = MaterialTheme.typography.bodyLarge.copy(textDecoration = TextDecoration.Underline),
-                    modifier = Modifier.clickable { uriHandler.openUri(apod.imageUrl) },
-                )
+            onBackClick?.let { onClick ->
+                IconButton(
+                    onClick = onClick,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp)
+                        .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.apod_back),
+                        tint = Color.White
+                    )
+                }
             }
         }
         Text(
@@ -138,7 +159,6 @@ internal fun ApodContent(
         )
         Text(
             text = apod.title,
-//            style = MaterialTheme.typography.headlineSmall
             style = MaterialTheme.typography.titleLarge
         )
         Text(
