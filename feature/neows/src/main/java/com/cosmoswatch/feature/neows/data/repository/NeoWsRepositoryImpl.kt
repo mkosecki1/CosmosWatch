@@ -15,6 +15,9 @@ import com.cosmoswatch.feature.neows.data.mapper.toDomain
 import com.cosmoswatch.feature.neows.data.mapper.toUpcomingEntity
 import com.cosmoswatch.feature.neows.data.remote.NeoArchiveRemoteMediator
 import com.cosmoswatch.feature.neows.data.remote.NeoWsApi
+import com.cosmoswatch.feature.neows.domain.NEO_CLOSE_THRESHOLD_LD
+import com.cosmoswatch.feature.neows.domain.NEO_LARGE_THRESHOLD_METERS
+import com.cosmoswatch.feature.neows.domain.NeoArchiveFilter
 import com.cosmoswatch.feature.neows.domain.NeoDomain
 import com.cosmoswatch.feature.neows.domain.NeoWsRepository
 import kotlinx.coroutines.delay
@@ -47,10 +50,19 @@ class NeoWsRepositoryImpl @Inject constructor(
 ) : NeoWsRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getArchive(): Flow<PagingData<NeoDomain>> = Pager(
+    override fun getArchive(filter: NeoArchiveFilter): Flow<PagingData<NeoDomain>> = Pager(
         config = PagingConfig(pageSize = ARCHIVE_PAGE_SIZE, enablePlaceholders = false),
-        remoteMediator = NeoArchiveRemoteMediator(api = api, database = database, clock = clock),
-        pagingSourceFactory = { database.neoArchiveDao().pagingSource() },
+        remoteMediator = NeoArchiveRemoteMediator(api = api, database = database, clock = clock, filter = filter),
+        pagingSourceFactory = {
+            database.neoArchiveDao().pagingSource(
+                hazardousOnly = filter.hazardousOnly,
+                closeOnly = filter.closeOnly,
+                closeThresholdLd = NEO_CLOSE_THRESHOLD_LD,
+                largeOnly = filter.largeOnly,
+                largeThresholdMeters = NEO_LARGE_THRESHOLD_METERS,
+                sentryOnly = filter.sentryOnly,
+            )
+        },
     ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 
     override fun getUpcoming(): Flow<AppResult<List<NeoDomain>>> = flow {

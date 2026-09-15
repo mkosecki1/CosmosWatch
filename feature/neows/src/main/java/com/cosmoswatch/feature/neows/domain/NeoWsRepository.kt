@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface NeoWsRepository {
     fun getUpcoming(): Flow<AppResult<List<NeoDomain>>>
-    fun getArchive(): Flow<PagingData<NeoDomain>>
+    fun getArchive(filter: NeoArchiveFilter = NeoArchiveFilter()): Flow<PagingData<NeoDomain>>
 }
