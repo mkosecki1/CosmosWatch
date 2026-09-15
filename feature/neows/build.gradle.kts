@@ -8,7 +8,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:network"))
+    implementation(project(":core:database"))
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
