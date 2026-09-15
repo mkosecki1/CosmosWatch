@@ -20,8 +20,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
-import com.cosmoswatch.core.ui.theme.Fraunces
-import com.cosmoswatch.core.ui.theme.FrauncesWeightWordmark
 import com.cosmoswatch.feature.apod.R
 import com.cosmoswatch.feature.apod.presentation.common.ApodContent
 import com.cosmoswatch.feature.apod.presentation.common.toMessage

@@ -7,12 +7,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 val CosmosWatchTypography = Typography(
-    headlineSmall = TextStyle(
-        fontFamily = Fraunces,
-        fontWeight = FrauncesWeightTitle,
-        fontSize = 26.sp,
-        lineHeight = 30.sp
-    ),
     titleSmall = TextStyle(
         fontFamily = IbmPlexSans,
         fontWeight = FontWeight.Medium,
