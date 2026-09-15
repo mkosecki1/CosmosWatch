@@ -9,4 +9,9 @@ android {
 
 dependencies {
     implementation(project(":core:network"))
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.paging.common)
+    ksp(libs.androidx.room.compiler)
 }
