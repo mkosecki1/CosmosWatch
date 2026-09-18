@@ -18,7 +18,7 @@ import com.cosmoswatch.feature.apod.presentation.daily.ApodScreen
 import com.cosmoswatch.feature.apod.presentation.imageviewer.ApodImageViewerRoute
 import com.cosmoswatch.feature.apod.presentation.imageviewer.ApodImageViewerScreen
 
-private const val NAV_TRANSITION_DURATION_MILLIS =50
+private const val NAV_TRANSITION_DURATION_MILLIS = 50
 fun NavGraphBuilder.apodNavGraph(navController: NavController) {
     val enter: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
         slideIntoContainer(

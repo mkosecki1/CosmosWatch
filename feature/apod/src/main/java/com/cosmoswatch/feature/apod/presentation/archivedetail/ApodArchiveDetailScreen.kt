@@ -1,7 +1,11 @@
 package com.cosmoswatch.feature.apod.presentation.archivedetail
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,9 +14,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,7 +53,7 @@ private fun ApodArchiveDetailScreenContent(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier,
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
     ) { innerPadding ->
         when (state) {
             ApodArchiveDetailState.Loading -> LoadingState(modifier = Modifier.padding(innerPadding).fillMaxSize())
@@ -62,7 +68,7 @@ private fun ApodArchiveDetailScreenContent(
                 onImageClick = onImageClick,
                 onBackClick = onBackClick,
                 modifier = Modifier.padding(innerPadding),
-                showTodayBadge = false
+                showTodayBadge = false,
             )
         }
     }

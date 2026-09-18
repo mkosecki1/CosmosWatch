@@ -1,0 +1,13 @@
+<resources>
+    <string name="neo_upcoming_title">Near-Earth Objects</string>
+    <string name="neo_retry">Retry</string>
+    <string name="neo_error_network">No internet connection. Check your connection and try again.</string>
+    <string name="neo_error_server">Something went wrong on NASA\'s end. Please try again later.</string>
+    <string name="neo_error_unknown">Something went wrong. Please try again.</string>
+    <string name="neo_badge_hazardous">Hazardous</string>
+    <string name="neo_badge_sentry">Sentry</string>
+    <string name="neo_stat_distance_label">Distance</string>
+    <string name="neo_stat_velocity_label">Velocity</string>
+    <string name="neo_stat_diameter_label">Diameter</string>
+    <string name="neo_tile_designation_label">"Asteroid designation</string>
+</resources>

@@ -54,6 +54,7 @@ import androidx.media3.ui.compose.material3.Player
 import androidx.media3.ui.compose.material3.PlayerDefaults
 import androidx.media3.common.Player as CorePlayer
 import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
+import com.cosmoswatch.core.ui.component.LocalBottomBarPadding
 import com.cosmoswatch.feature.apod.R
 import com.cosmoswatch.feature.apod.domain.ApodDomain
 import com.cosmoswatch.feature.apod.domain.ApodMediaType
@@ -67,15 +68,16 @@ internal fun ApodContent(
     onImageClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
-    showTodayBadge: Boolean = false
+    showTodayBadge: Boolean = false,
 ) {
     val uriHandler = LocalUriHandler.current
+    val bottomContentPadding = LocalBottomBarPadding.current
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp + bottomContentPadding),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Box {

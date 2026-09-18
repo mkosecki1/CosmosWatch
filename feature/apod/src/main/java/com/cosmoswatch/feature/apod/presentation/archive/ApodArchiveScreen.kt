@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,6 +60,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
+import com.cosmoswatch.core.ui.component.LocalBottomBarPadding
 import com.cosmoswatch.core.ui.theme.OnAccentPrimary
 import com.cosmoswatch.core.ui.theme.VideoTagTextStyle
 import com.cosmoswatch.feature.apod.R
@@ -102,9 +106,11 @@ private fun ApodArchiveScreenContent(
     modifier: Modifier = Modifier,
 ) {
     var showFilterRow by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.apod_archive_title)) },
@@ -122,6 +128,7 @@ private fun ApodArchiveScreenContent(
                         )
                     }
                 },
+                scrollBehavior = scrollBehavior
             )
         },
     ) { innerPadding ->
@@ -334,10 +341,16 @@ private fun ClearFilterChip(onClick: () -> Unit, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun ArchiveList(archive: LazyPagingItems<ApodDomain>, onEntryClick: (LocalDate) -> Unit, modifier: Modifier = Modifier) {
+private fun ArchiveList(
+    archive: LazyPagingItems<ApodDomain>,
+    onEntryClick: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val bottomContentPadding = LocalBottomBarPadding.current
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = bottomContentPadding),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(
