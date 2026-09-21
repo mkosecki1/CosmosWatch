@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                             onClick = { navController.navigate(NeoUpcomingRoute) { launchSingleTop = true } },
                             icon = {
                                 Icon(
-                                    painter = painterResource(com.cosmoswatch.feature.neows.R.drawable.ic_asteroid),
+                                    painter = painterResource(com.cosmoswatch.feature.neows.R.drawable.ic_badge_radar),
                                     contentDescription = "NeoWs"
                                 )
                             },

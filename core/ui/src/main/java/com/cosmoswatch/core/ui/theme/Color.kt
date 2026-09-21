@@ -13,6 +13,8 @@ private val OnErrorColor = Color(0xFF690005)
 private val ErrorContainerColor = Color(0xFF93000A)
 private val OnErrorContainerColor = Color(0xFFFFDAD6)
 
+val SentryBlue = Color(0xFF0E4C75)
+
 private fun editorialDarkColorScheme(
     background: Color,
     surface: Color,

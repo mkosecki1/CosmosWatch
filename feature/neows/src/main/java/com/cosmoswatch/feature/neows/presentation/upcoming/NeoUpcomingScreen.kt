@@ -77,7 +77,7 @@ private fun NeoUpcomingScreenContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(items = state.neos, key = {it.id}) { neoItem ->
-                    NeoTile(neoDomain = neoItem)
+                    NeoTile(neoDomain = neoItem, today = state.today)
                 }
             }
         }

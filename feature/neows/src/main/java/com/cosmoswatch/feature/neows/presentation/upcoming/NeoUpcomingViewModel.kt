@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 private const val STATE_SHARING_TIMEOUT_MILLIS = 5_000L
@@ -22,6 +24,7 @@ private const val STATE_SHARING_TIMEOUT_MILLIS = 5_000L
 @HiltViewModel
 class NeoUpcomingViewModel @Inject constructor(
     private val repository: NeoWsRepository,
+    private val clock: Clock,
 ) : ViewModel() {
 
     private val retryTrigger = MutableStateFlow(0)
@@ -31,7 +34,10 @@ class NeoUpcomingViewModel @Inject constructor(
             repository.getUpcoming()
                 .map { result ->
                     when (result) {
-                        is AppResult.Success -> NeoUpcomingState.Success(result.data)
+                        is AppResult.Success -> NeoUpcomingState.Success(
+                            neos = result.data,
+                            today = LocalDate.now(clock)
+                        )
                         is AppResult.Failure -> NeoUpcomingState.Error(result.error)
                     }
                 }
