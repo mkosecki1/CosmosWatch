@@ -57,10 +57,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.cosmoswatch.core.ui.component.ClearFilterChip
 import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
+import com.cosmoswatch.core.ui.component.EmptyState
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
 import com.cosmoswatch.core.ui.component.LocalBottomBarPadding
+import com.cosmoswatch.core.ui.component.ToggleChip
 import com.cosmoswatch.core.ui.theme.OnAccentPrimary
 import com.cosmoswatch.core.ui.theme.VideoTagTextStyle
 import com.cosmoswatch.feature.apod.R
@@ -156,9 +159,7 @@ private fun ApodArchiveScreenContent(
                     onRetry = { archive.retry() },
                     modifier = Modifier.fillMaxSize(),
                 )
-                archive.itemCount == 0 -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(R.string.apod_archive_empty), style = MaterialTheme.typography.bodyLarge)
-                }
+                archive.itemCount == 0 -> EmptyState(message = stringResource(R.string.apod_archive_empty))
                 else -> ArchiveList(archive = archive, onEntryClick = onEntryClick)
             }
         }
@@ -172,11 +173,14 @@ private fun DateFilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveInten
     var pickingEnd by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ClearFilterChip(onClick = { onIntent(ApodArchiveIntent.ClearFilter) })
+        ClearFilterChip(
+            contentDescription = stringResource(R.string.apod_archive_clear_filter),
+            onClick = { onIntent(ApodArchiveIntent.ClearFilter) }
+        )
         DateFilterChip(
             label = filter.startDate?.iso() ?: stringResource(R.string.apod_archive_filter_from_unset),
             onClick = { pickingStart = true },
@@ -225,7 +229,7 @@ private fun DateFilterChip(label: String, onClick: () -> Unit, modifier: Modifie
     ) {
         Row(
             modifier = Modifier
-                .defaultMinSize(minHeight = 44.dp)
+                .defaultMinSize(minHeight = 32.dp)
                 .padding(horizontal = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -287,7 +291,7 @@ private fun MediaTypeFilterRow(selected: ApodMediaType?, onSelected: (ApodMediaT
     val options = listOf(null, ApodMediaType.IMAGE, ApodMediaType.VIDEO)
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEachIndexed { index, type ->
-            MediaTypeChip(
+            ToggleChip(
                 label = when (type) {
                     null -> stringResource(R.string.apod_archive_filter_all)
                     ApodMediaType.IMAGE -> stringResource(R.string.apod_archive_filter_photos)
@@ -295,46 +299,6 @@ private fun MediaTypeFilterRow(selected: ApodMediaType?, onSelected: (ApodMediaT
                 selected = selected == type,
                 onClick = { onSelected(type) },
                 modifier = modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun MediaTypeChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier,
-        shape = MaterialTheme.shapes.small,
-        color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surfaceVariant
-    ) {
-        Box(
-            modifier = Modifier.defaultMinSize(minHeight = 40.dp).padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-          Text(
-              text = label,
-              style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 13.sp),
-              color = if (selected) MaterialTheme.colorScheme.onPrimary else  MaterialTheme.colorScheme.onSurface,
-          )
-        }
-
-    }
-}
-
-@Composable
-private fun ClearFilterChip(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.size(40.dp),
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.onSurface,
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = Icons.Filled.Clear,
-                contentDescription = stringResource(R.string.apod_archive_clear_filter),
-                tint = OnAccentPrimary
             )
         }
     }

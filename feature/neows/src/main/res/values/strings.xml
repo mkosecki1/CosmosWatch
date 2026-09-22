@@ -30,4 +30,19 @@
     <string name="neo_size_comparison_similar">about the size of %1$s</string>
     <string name="neo_size_comparison_bigger">bigger than %1$s</string>
     <string name="neo_size_comparison_much_bigger">much bigger than %1$s</string>
+    <string name="neo_filter_hazardous">Hazardous</string>
+    <string name="neo_filter_close">Close</string>
+    <string name="neo_filter_large">Large</string>
+    <string name="neo_filter_sentry">Sentry</string>
+    <string name="neo_clear_filter">Clear filters</string>
+    <string name="neo_filters_info_description">Filter definitions</string>
+    <string name="neo_filters_info_title">About these filters</string>
+    <string name="neo_info_ld_title">What\'s an LD?</string>
+    <string name="neo_info_ld_body">LD stands for Lunar Distance — roughly 384,400 km, the average distance between Earth and the Moon. It\'s used throughout this screen as an intuitive unit for how close an asteroid\'s approach is.</string>
+    <string name="neo_info_close_title">Close Approach Filter</string>
+    <string name="neo_info_close_body">Shows only asteroids passing within 1 lunar distance (LD) — the threshold CNEOS uses to flag particularly close approaches.</string>
+    <string name="neo_info_large_title">Large Size Filter</string>
+    <string name="neo_info_large_body">Shows only asteroids at least 140 m across — the official size threshold NASA/CNEOS and ESA/NEOCC use for potentially hazardous asteroids. Since NASA reports size as a range, this checks the lower bound, so only asteroids that are large even under the most conservative estimate are
+  shown.</string>
+    <string name="neo_upcoming_empty">No matching asteroids in the next 14 days.</string>
 </resources>
