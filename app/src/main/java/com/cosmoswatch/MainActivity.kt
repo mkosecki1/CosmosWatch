@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cosmoswatch.core.ui.component.LocalBottomBarPadding
 import com.cosmoswatch.core.ui.theme.CosmosWatchTheme
 import com.cosmoswatch.feature.apod.presentation.daily.ApodRoute
+import com.cosmoswatch.feature.apod.presentation.imageviewer.ApodImageViewerRoute
 import com.cosmoswatch.feature.apod.presentation.navigation.apodNavGraph
 import com.cosmoswatch.feature.neows.presentation.navigation.neoWsNavGraph
 import com.cosmoswatch.feature.neows.presentation.upcoming.NeoUpcomingRoute
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val density = LocalDensity.current
                 var bottomNavHeight = remember { mutableStateOf(0.dp) }
+                val isImageViewerActive = currentBackStackEntry?.destination?.hasRoute(ApodImageViewerRoute::class) == true
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     CompositionLocalProvider(LocalBottomBarPadding provides bottomNavHeight.value) {
@@ -64,38 +66,40 @@ class MainActivity : ComponentActivity() {
                             neoWsNavGraph()
                         }
                     }
-                    NavigationBar(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .onGloballyPositioned { coordinates ->
-                                bottomNavHeight.value = with(density) {
-                                    coordinates.size.height.toDp()
-                                }
-                            },
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-                    ) {
-                        NavigationBarItem(
-                            selected = currentBackStackEntry?.destination?.hasRoute(ApodRoute::class) == true,
-                            onClick = { navController.navigate(ApodRoute) { launchSingleTop = true } },
-                            icon = {
-                                Icon(
-                                    Icons.Filled.Star,
-                                    contentDescription = "APOD"
-                                )
-                            },
-                            label = { Text(text = "APOD") }
-                        )
-                        NavigationBarItem(
-                            selected = currentBackStackEntry?.destination?.hasRoute(NeoUpcomingRoute::class) == true,
-                            onClick = { navController.navigate(NeoUpcomingRoute) { launchSingleTop = true } },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(com.cosmoswatch.feature.neows.R.drawable.ic_badge_radar),
-                                    contentDescription = "NeoWs"
-                                )
-                            },
-                            label = { Text(text = "NeoWs") }
-                        )
+                    if (!isImageViewerActive) {
+                        NavigationBar(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .onGloballyPositioned { coordinates ->
+                                    bottomNavHeight.value = with(density) {
+                                        coordinates.size.height.toDp()
+                                    }
+                                },
+                            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                        ) {
+                            NavigationBarItem(
+                                selected = currentBackStackEntry?.destination?.hasRoute(ApodRoute::class) == true,
+                                onClick = { navController.navigate(ApodRoute) { launchSingleTop = true } },
+                                icon = {
+                                    Icon(
+                                        Icons.Filled.Star,
+                                        contentDescription = "APOD"
+                                    )
+                                },
+                                label = { Text(text = "APOD") }
+                            )
+                            NavigationBarItem(
+                                selected = currentBackStackEntry?.destination?.hasRoute(NeoUpcomingRoute::class) == true,
+                                onClick = { navController.navigate(NeoUpcomingRoute) { launchSingleTop = true } },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(com.cosmoswatch.feature.neows.R.drawable.ic_badge_radar),
+                                        contentDescription = "NeoWs"
+                                    )
+                                },
+                                label = { Text(text = "NeoWs") }
+                            )
+                        }
                     }
                 }
             }

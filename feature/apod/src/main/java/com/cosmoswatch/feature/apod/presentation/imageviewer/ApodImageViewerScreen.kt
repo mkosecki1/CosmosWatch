@@ -29,7 +29,7 @@ fun ApodImageViewerScreen(imageUrl: String, onBackClick: () -> Unit, modifier: M
     val activity = LocalContext.current.findActivity()
     DisposableEffect(activity) {
         val previousOrientation = activity?.requestedOrientation
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         onDispose {
             activity?.requestedOrientation = previousOrientation ?: ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
