@@ -36,7 +36,7 @@ fun CosmosWatchApp() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 apodNavGraph(navController)
-                neoWsNavGraph()
+                neoWsNavGraph(navController)
             }
         }
         if (!isImageViewerActive) {

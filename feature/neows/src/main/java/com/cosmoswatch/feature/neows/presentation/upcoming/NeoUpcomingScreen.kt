@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +42,7 @@ import com.cosmoswatch.feature.neows.presentation.common.toMessage
 
 @Composable
 fun NeoUpcomingScreen(
+    onArchiveClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NeoUpcomingViewModel = hiltViewModel()
 ) {
@@ -49,6 +51,7 @@ fun NeoUpcomingScreen(
     NeoUpcomingScreenContent(
         state = state,
         onIntent = viewModel::onIntent,
+        onArchiveClick = onArchiveClick,
         modifier = modifier,
     )
 }
@@ -58,6 +61,7 @@ fun NeoUpcomingScreen(
 private fun NeoUpcomingScreenContent(
     state: NeoUpcomingState,
     onIntent: (NeoUpcomingIntent) -> Unit,
+    onArchiveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -74,6 +78,12 @@ private fun NeoUpcomingScreenContent(
                         Icon(
                             imageVector = Icons.Outlined.Info,
                             contentDescription = stringResource(R.string.neo_filters_info_description),
+                        )
+                    }
+                    IconButton(onClick = onArchiveClick) {
+                        Icon(
+                            imageVector = Icons.Filled.DateRange,
+                            contentDescription = stringResource(R.string.neo_browse_archive),
                         )
                     }
                 },

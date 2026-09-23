@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,23 +18,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,13 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -59,6 +48,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.cosmoswatch.core.ui.component.ClearFilterChip
 import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
+import com.cosmoswatch.core.ui.component.DateBoundPickerDialog
+import com.cosmoswatch.core.ui.component.DateFilterChip
 import com.cosmoswatch.core.ui.component.EmptyState
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.LoadingState
@@ -72,8 +63,6 @@ import com.cosmoswatch.feature.apod.domain.ApodArchiveFilter
 import com.cosmoswatch.feature.apod.domain.ApodDomain
 import com.cosmoswatch.feature.apod.domain.ApodMediaType
 import com.cosmoswatch.feature.apod.presentation.common.VideoPlayOverlay
-import com.cosmoswatch.feature.apod.presentation.common.toEpochMillisUtc
-import com.cosmoswatch.feature.apod.presentation.common.toLocalDateUtc
 import com.cosmoswatch.feature.apod.presentation.common.toMessage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -125,9 +114,8 @@ private fun ApodArchiveScreenContent(
                 actions = {
                     IconButton(onClick = { showFilterRow = !showFilterRow }) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_filter),
+                            imageVector = Icons.Filled.FilterList,
                             contentDescription = stringResource(R.string.apod_archive_filter),
-                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -198,6 +186,8 @@ private fun DateFilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveInten
             initialDate = filter.startDate ?: LocalDate.now(),
             earliest = APOD_ARCHIVE_START_DATE,
             latest = filter.endDate ?: LocalDate.now(),
+            confirmLabel = stringResource(R.string.apod_archive_confirm),
+            cancelLabel = stringResource(R.string.apod_archive_cancel),
             onDismiss = { pickingStart = false },
             onConfirm = { picked ->
                 onIntent(ApodArchiveIntent.FilterChanged(filter.copy(startDate = picked)))
@@ -210,79 +200,14 @@ private fun DateFilterRow(filter: ApodArchiveFilter, onIntent: (ApodArchiveInten
             initialDate = filter.endDate ?: LocalDate.now(),
             earliest = filter.startDate ?: APOD_ARCHIVE_START_DATE,
             latest = LocalDate.now(),
+            confirmLabel = stringResource(R.string.apod_archive_confirm),
+            cancelLabel = stringResource(R.string.apod_archive_cancel),
             onDismiss = { pickingEnd = false },
             onConfirm = { picked ->
                 onIntent(ApodArchiveIntent.FilterChanged(filter.copy(endDate = picked)))
                 pickingEnd = false
             },
         )
-    }
-}
-
-@Composable
-private fun DateFilterChip(label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier,
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceVariant
-    ) {
-        Row(
-            modifier = Modifier
-                .defaultMinSize(minHeight = 32.dp)
-                .padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.DateRange,
-                contentDescription = null,
-                modifier = Modifier.size(14.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 13.sp),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DateBoundPickerDialog(
-    initialDate: LocalDate,
-    earliest: LocalDate,
-    latest: LocalDate,
-    onDismiss: () -> Unit,
-    onConfirm: (LocalDate) -> Unit,
-) {
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialDate.toEpochMillisUtc(),
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val date = utcTimeMillis.toLocalDateUtc()
-                return !date.isBefore(earliest) && !date.isAfter(latest)
-            }
-        },
-    )
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                datePickerState.selectedDateMillis?.let { onConfirm(it.toLocalDateUtc()) } ?: onDismiss()
-            }) {
-                Text(text = stringResource(R.string.apod_archive_confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.apod_archive_cancel))
-            }
-        },
-    ) {
-        DatePicker(state = datePickerState)
     }
 }
 

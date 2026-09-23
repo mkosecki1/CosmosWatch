@@ -44,5 +44,7 @@ internal fun daysUntilCloseApproach(closeApproachDate: LocalDate, today: LocalDa
 internal fun approachLabel(daysUntil: Long): String = when (daysUntil) {
     0L -> stringResource(R.string.neo_approach_today)
     1L -> stringResource(R.string.neo_approach_tomorrow)
+    -1L -> stringResource(R.string.neo_approach_yesterday)
+    in Long.MIN_VALUE..-2L -> stringResource(R.string.neo_approach_days_ago, -daysUntil.toInt())
     else -> stringResource(R.string.neo_approach_in_days, daysUntil.toInt())
 }

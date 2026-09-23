@@ -17,6 +17,8 @@
     <string name="neo_approach_today">Today</string>
     <string name="neo_approach_tomorrow">Tomorrow</string>
     <string name="neo_approach_in_days">In %1$d days</string>
+    <string name="neo_approach_yesterday">Yesterday</string>
+    <string name="neo_approach_days_ago">%1$d days ago</string>
     <string name="neo_stat_distance_label">Distance</string>
     <string name="neo_stat_velocity_label">Velocity</string>
     <string name="neo_stat_diameter_label">Diameter</string>
@@ -45,4 +47,13 @@
     <string name="neo_info_large_body">Shows only asteroids at least 140 m across — the official size threshold NASA/CNEOS and ESA/NEOCC use for potentially hazardous asteroids. Since NASA reports size as a range, this checks the lower bound, so only asteroids that are large even under the most conservative estimate are
   shown.</string>
     <string name="neo_upcoming_empty">No matching asteroids in the next 14 days.</string>
+    <string name="neo_browse_archive">Browse archive</string>
+    <string name="neo_archive_title">NEO archive</string>
+    <string name="neo_back">Back</string>
+    <string name="neo_archive_empty">No matching asteroids in this range.</string>
+    <string name="neo_archive_filter">Filters</string>
+    <string name="neo_archive_filter_from_unset">From</string>
+    <string name="neo_archive_filter_to_unset">To</string>
+    <string name="neo_archive_confirm">OK</string>
+    <string name="neo_archive_cancel">Cancel</string>
 </resources>

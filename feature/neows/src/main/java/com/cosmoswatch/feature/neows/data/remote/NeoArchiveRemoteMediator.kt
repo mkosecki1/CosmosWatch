@@ -59,7 +59,7 @@ class NeoArchiveRemoteMediator(
     private fun rangeToLoad(loadType: LoadType, currentKey: NeoArchiveRemoteKeyEntity?): DateRange? = when (loadType) {
         LoadType.PREPEND -> null
         LoadType.REFRESH -> {
-            val end = filter.endDate ?: LocalDate.now(clock)
+            val end = filter.endDate ?: LocalDate.now(clock).minusDays(1)
             val start = end.minusDays(WINDOW_DAYS - 1)
             DateRange(start = if (boundaryStartDate != null) maxOf(start, boundaryStartDate) else start, end = end)
         }

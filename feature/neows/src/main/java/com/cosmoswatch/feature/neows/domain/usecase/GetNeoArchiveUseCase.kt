@@ -29,7 +29,7 @@ class GetNeoArchiveUseCase @Inject constructor(
         val start = filter.startDate
         val end = filter.endDate
         return when {
-            end != null && end.isAfter(today) -> AppError.Validation("end_date_in_future")
+            end != null && !end.isBefore(today) -> AppError.Validation("end_date_not_before_today")
             start != null && end != null && start.isAfter(end) -> AppError.Validation("start_date_after_end_date")
             else -> null
         }

@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 private const val STATE_SHARING_TIMEOUT_MILLIS = 5_000L
@@ -26,6 +28,7 @@ private const val STATE_SHARING_TIMEOUT_MILLIS = 5_000L
 @HiltViewModel
 class NeoArchiveViewModel @Inject constructor(
     private val getNeoArchiveUseCase: GetNeoArchiveUseCase,
+    private val clock: Clock,
 ) : ViewModel() {
 
     private val filter = MutableStateFlow(NeoArchiveFilter())
@@ -35,13 +38,14 @@ class NeoArchiveViewModel @Inject constructor(
             val result = getNeoArchiveUseCase(currentFilter)
             NeoArchiveState(
                 filter = currentFilter,
+                today = LocalDate.now(clock),
                 filterError = (result as? AppResult.Failure)?.error,
             )
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STATE_SHARING_TIMEOUT_MILLIS),
-            initialValue = NeoArchiveState(),
+            initialValue = NeoArchiveState(filter = NeoArchiveFilter(), today = LocalDate.now(clock)),
         )
 
     val archive: Flow<PagingData<NeoDomain>> = filter
