@@ -29,6 +29,14 @@ class DonkiRepositoryImpl @Inject constructor(
     override fun getTimeline(filter: DonkiTimelineFilter): Flow<PagingData<DonkiEventDomain>> = Pager(
         config = PagingConfig(pageSize = TIMELINE_PAGE_SIZE, enablePlaceholders = false),
         remoteMediator = DonkiRemoteMediator(api = api, database = database, clock = clock, filter = filter),
-        pagingSourceFactory = { database.donkiTimelineDao().pagingSource() },
+        pagingSourceFactory = {
+            database.donkiTimelineDao().pagingSource(
+                showFlares = filter.showFlares,
+                showCmes = filter.showCmes,
+                showStorms = filter.showStorms,
+                significantOnly = filter.significantOnly,
+                earthDirectedOnly = filter.earthDirectedOnly,
+            )
+        },
     ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
 }
