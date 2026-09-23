@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.cosmoswatch.android.feature)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -8,5 +9,14 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:network"))
+    implementation(project(":core:database"))
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
     implementation(libs.androidx.paging.common)
+    implementation(libs.kotlinx.serialization.json)
+    ksp(libs.androidx.room.compiler)
+
+    testImplementation(project(":core:testing"))
 }
