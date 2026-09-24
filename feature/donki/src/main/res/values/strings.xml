@@ -1,0 +1,7 @@
+<resources>
+    <string name="donki_timeline_title">Space Weather</string>
+    <string name="donki_flare_title">Solar flare</string>
+    <string name="donki_cme_title">Coronal mass ejection</string>
+    <string name="donki_storm_title">Geomagnetic storm</string>
+    <string name="donki_badge_storm_scale">G%1$d</string>
+</resources>

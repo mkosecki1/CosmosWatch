@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Flare
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Radar
 import androidx.compose.material3.Icon
@@ -25,6 +26,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import com.cosmoswatch.core.ui.component.AppBottomNavItem
 import com.cosmoswatch.feature.apod.presentation.daily.ApodRoute
+import com.cosmoswatch.feature.donki.presentation.timeline.DonkiTimelineRoute
 import com.cosmoswatch.feature.neows.presentation.upcoming.NeoUpcomingRoute
 
 @Composable
@@ -52,6 +54,7 @@ fun AppBottomBar(
         ) {
             val apodLabel = stringResource(R.string.bottom_nav_apod)
             val neoWsLabel = stringResource(R.string.bottom_nav_neows)
+            val donkiLabel = stringResource(R.string.bottom_nav_donki)
             AppBottomNavItem(
                 selected = currentBackStackEntry?.destination?.hasRoute(ApodRoute::class) == true,
                 onClick = { navController.navigate(ApodRoute) { launchSingleTop = true } },
@@ -63,6 +66,12 @@ fun AppBottomBar(
                 onClick = { navController.navigate(NeoUpcomingRoute) { launchSingleTop = true } },
                 label = neoWsLabel,
                 icon = { tint -> Icon(Icons.Outlined.Radar, contentDescription = neoWsLabel, tint = tint) },
+            )
+            AppBottomNavItem(
+                selected = currentBackStackEntry?.destination?.hasRoute(DonkiTimelineRoute::class) == true,
+                onClick = { navController.navigate(DonkiTimelineRoute) { launchSingleTop = true } },
+                label = donkiLabel,
+                icon = { tint -> Icon(Icons.Outlined.Flare, contentDescription = donkiLabel, tint = tint) },
             )
         }
     }

@@ -19,6 +19,7 @@ import com.cosmoswatch.core.ui.component.LocalBottomBarPadding
 import com.cosmoswatch.feature.apod.presentation.daily.ApodRoute
 import com.cosmoswatch.feature.apod.presentation.imageviewer.ApodImageViewerRoute
 import com.cosmoswatch.feature.apod.presentation.navigation.apodNavGraph
+import com.cosmoswatch.feature.donki.presentation.navigation.donkiNavGraph
 import com.cosmoswatch.feature.neows.presentation.navigation.neoWsNavGraph
 
 @Composable
@@ -37,6 +38,7 @@ fun CosmosWatchApp() {
             ) {
                 apodNavGraph(navController)
                 neoWsNavGraph(navController)
+                donkiNavGraph()
             }
         }
         if (!isImageViewerActive) {

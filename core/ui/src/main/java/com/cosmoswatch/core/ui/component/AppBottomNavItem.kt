@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -39,6 +40,12 @@ fun RowScope.AppBottomNavItem(
         verticalArrangement = Arrangement.Center,
     ) {
         icon(contentColor)
-        Text(text = label, style = MaterialTheme.typography.labelSmall, color = contentColor)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = contentColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }

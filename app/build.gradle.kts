@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:apod"))
     implementation(project(":feature:neows"))
+    implementation(project(":feature:donki"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
