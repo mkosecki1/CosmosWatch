@@ -56,9 +56,11 @@ private fun forecastKp(enlil: EnlilDto): Double? =
 fun CmeDto.toDomain(): DonkiEventDomain.CmeEjection {
     val analysis = bestAnalysis(cmeAnalyses)
     val enlil = latestEnlilRun(analysis)
-    val forecastKp = enlil?.let(::forecastKp)
+    val estimatedArrivalTime = enlil?.estimatedShockArrivalTime?.toInstant()
+    val isEarthDirected = estimatedArrivalTime != null
+    val forecastKp = if (isEarthDirected) enlil?.let(::forecastKp) else null
     val severity = when {
-        enlil == null -> DonkiSeverity.NONE
+        !isEarthDirected -> DonkiSeverity.NONE
         (forecastKp ?: 0.0) >= SEVERE_KP_THRESHOLD -> DonkiSeverity.SEVERE
         else -> DonkiSeverity.MODERATE
     }
@@ -70,8 +72,8 @@ fun CmeDto.toDomain(): DonkiEventDomain.CmeEjection {
         linkedEventIds = linkedEvents.orEmpty().map { it.activityID },
         note = note,
         speedKmS = analysis?.speed,
-        isEarthDirected = enlil != null,
-        estimatedArrivalTime = enlil?.estimatedShockArrivalTime?.toInstant(),
+        isEarthDirected = isEarthDirected,
+        estimatedArrivalTime = estimatedArrivalTime,
         forecastKp = forecastKp,
     )
 }

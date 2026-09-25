@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,10 +22,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.cosmoswatch.core.ui.component.InfoDialogIcon
+import com.cosmoswatch.feature.donki.R
 import com.cosmoswatch.feature.donki.domain.DonkiSeverity
 import java.time.Instant
+
+data class DonkiBadge(
+    val label: String,
+    val info: DonkiInfo,
+)
+
+data class DonkiInfo(
+    val title: String,
+    val body: String
+)
 
 @Composable
 fun DonkiEventCard(
@@ -33,12 +47,19 @@ fun DonkiEventCard(
     eventTime: Instant,
     severity: DonkiSeverity,
     modifier: Modifier = Modifier,
-    badge: String? = null,
+    badge: DonkiBadge? = null,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     val accent = severity.accentColor()
 
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor  = MaterialTheme.colorScheme.surfaceContainerHigh,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -71,11 +92,17 @@ fun DonkiEventCard(
                                 contentColor = accent
                             ) {
                                 Text(
-                                    text = badge,
+                                    text = badge.label,
                                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                                 )
                             }
+                            Spacer(Modifier.width(8.dp))
+                            InfoDialogIcon(
+                                title = badge.info.title,
+                                body = badge.info.body,
+                                closeLabel = stringResource(R.string.donki_info_dialog_close)
+                            )
                         }
                     }
                     Text(

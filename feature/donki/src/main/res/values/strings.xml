@@ -4,4 +4,27 @@
     <string name="donki_cme_title">Coronal mass ejection</string>
     <string name="donki_storm_title">Geomagnetic storm</string>
     <string name="donki_badge_storm_scale">G%1$d</string>
+    <string name="donki_info_dialog_close">Close</string>
+    <string name="donki_info_flare_class_title">Solar Flare Class</string>
+    <string name="donki_info_flare_class_body">Flares are classified by their peak X-ray brightness, measured by NOAA\'s GOES satellites: A, B, C, M and X, where each class is 10 times stronger than the one before. The number is a multiplier within the class, so M3.4 is 3.4 times stronger than M1. Only M and X flares are strong enough to cause radio blackouts on the sunlit side of Earth.</string>
+    <string name="donki_info_storm_scale_title">Geomagnetic Storm Scale</string>
+    <string name="donki_info_storm_scale_body">NOAA\'s G scale rates geomagnetic storms from G1 (minor) to G5 (extreme). It\'s based on the Kp index, which measures how strongly Earth\'s magnetic field is disturbed on a 0–9 scale: G1 starts at Kp 5, and each level adds one Kp point, up to G5 at Kp 9. Stronger storms push auroras further from the poles and can disrupt satellites, GPS and power grids.</string>
+    <string name="donki_stat_peak_time_label">Peak time</string>
+    <string name="donki_stat_active_region_label">Active region</string>
+    <string name="donki_active_region_value">AR %1$d</string>
+    <string name="donki_info_active_region_title">Active Region</string>
+    <string name="donki_info_active_region_body">An active region is an area of intense magnetic activity on the Sun, usually visible as a group of sunspots. NOAA gives each one a number when it appears, so flares sharing the same number came from the same spot. A single region can produce many flares over the roughly two weeks it takes to cross the side of the Sun facing Earth.</string>
+    <string name="donki_stat_detected_label">Detected</string>
+    <string name="donki_stat_speed_label">Speed</string>
+    <string name="donki_speed_value">%1$d km/s</string>
+    <string name="donki_cme_forecast_header">Forecast for Earth</string>
+    <string name="donki_cme_forecast_arrival_label">Arrival</string>
+    <string name="donki_cme_forecast_storm_label">Expected storm</string>
+    <string name="donki_cme_forecast_no_storm">None</string>
+    <string name="donki_cme_not_heading_to_earth">Not heading toward Earth</string>
+    <string name="donki_storm_level_minor">Minor</string>
+    <string name="donki_storm_level_moderate">Moderate</string>
+    <string name="donki_storm_level_strong">Strong</string>
+    <string name="donki_storm_level_severe">Severe</string>
+    <string name="donki_storm_level_extreme">Extreme</string>
 </resources>

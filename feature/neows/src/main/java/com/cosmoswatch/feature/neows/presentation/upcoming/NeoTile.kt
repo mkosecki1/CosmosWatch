@@ -2,8 +2,6 @@ package com.cosmoswatch.feature.neows.presentation.upcoming
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,16 +29,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Apartment
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.outlined.Flight
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
+import com.cosmoswatch.core.ui.component.InfoDialogIcon
 import com.cosmoswatch.core.ui.theme.SentryBlue
 import com.cosmoswatch.feature.neows.R
 import com.cosmoswatch.feature.neows.domain.NeoDomain
@@ -92,6 +82,7 @@ fun NeoTile(
                         InfoDialogIcon(
                             title = stringResource(R.string.neo_info_hazardous_title),
                             body = stringResource(R.string.neo_info_hazardous_body),
+                            closeLabel = stringResource(R.string.neo_info_dialog_close)
                         )
                     }
                     if (neoDomain.isSentryObject) {
@@ -102,6 +93,7 @@ fun NeoTile(
                         InfoDialogIcon(
                             title = stringResource(R.string.neo_info_sentry_title),
                             body = stringResource(R.string.neo_info_sentry_body),
+                            closeLabel = stringResource(R.string.neo_info_dialog_close)
                         )
                     }
                 }
@@ -172,42 +164,6 @@ private fun NeoWsTag(title: String, color: Color, modifier: Modifier = Modifier)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun InfoDialogIcon(
-    title: String,
-    body: String,
-    modifier: Modifier = Modifier
-) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    Icon(
-        imageVector = Icons.Outlined.Info,
-        contentDescription = title,
-        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier
-            .size(16.dp)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { showDialog = true }
-    )
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            confirmButton = {
-                TextButton(
-                    onClick = { showDialog = false }
-                ) {
-                    Text(stringResource(R.string.neo_info_dialog_close))
-                }
-            },
-            title = { Text(title) },
-            text = { Text(body, textAlign = TextAlign.Justify) }
-        )
-    }
-}
-
 @Composable
 private fun NeoStatRow(
     label: String,
@@ -242,7 +198,11 @@ private fun NeoStatRow(
             style = MaterialTheme.typography.bodyMedium
         )
         if (infoTitle != null && infoBody != null) {
-            InfoDialogIcon(title = infoTitle, body = infoBody)
+            InfoDialogIcon(
+                title = infoTitle,
+                body = infoBody,
+                closeLabel = stringResource(R.string.neo_info_dialog_close)
+            )
         }
     }
 }

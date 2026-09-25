@@ -123,6 +123,30 @@ class DonkiMappersTest {
     }
 
     @Test
+    fun `CME modelled by Enlil without an Earth arrival is not Earth-directed`() {
+        val cme = CmeDto(
+            activityID = "id",
+            startTime = "2024-05-11T16:24Z",
+            note = "Enlil run shows impacts on STEREO A and Parker Solar Probe only.",
+            link = "link",
+            cmeAnalyses = listOf(
+                CmeAnalysisDto(
+                    isMostAccurate = true,
+                    speed = 650.0,
+                    enlilList = listOf(enlil(modelCompletionTime = "2024-05-11T20:00Z", arrival = null, kp90 = null, kp135 = null)),
+                ),
+            ),
+        )
+
+        val domain = cme.toDomain()
+
+        assertFalse(domain.isEarthDirected)
+        assertNull(domain.estimatedArrivalTime)
+        assertNull(domain.forecastKp)
+        assertEquals(DonkiSeverity.NONE, domain.severity)
+    }
+
+    @Test
     fun `CME with a moderate forecast Kp is moderate severity, not severe`() {
         val cme = CmeDto(
             activityID = "id",

@@ -10,12 +10,20 @@ import com.cosmoswatch.feature.donki.domain.DonkiEventDomain
 
 @Composable
 fun StormTile(storm: DonkiEventDomain.GeomagneticStorm, modifier: Modifier = Modifier) {
+    val badge = DonkiBadge(
+        label = stringResource(R.string.donki_badge_storm_scale, geomagneticStormScale(storm.peakKp)),
+        info = DonkiInfo(
+            title = stringResource(R.string.donki_info_storm_scale_title),
+            body = stringResource(R.string.donki_info_storm_scale_body)
+        )
+    )
+
     DonkiEventCard(
         icon = Icons.Outlined.Thunderstorm,
         title = stringResource(R.string.donki_storm_title),
         eventTime = storm.eventTime,
         severity = storm.severity,
-        badge = stringResource(R.string.donki_badge_storm_scale, geomagneticStormScale(storm.peakKp)),
+        badge = badge,
         modifier = modifier
     )
 }
