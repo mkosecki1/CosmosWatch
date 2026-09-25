@@ -31,7 +31,7 @@ import com.cosmoswatch.feature.apod.presentation.common.toMessage
 @Composable
 fun ApodScreen(
     onArchiveClick: () -> Unit,
-    onImageClick: (String) -> Unit,
+    onImageClick: (imageUrl: String, hdImageUrl: String?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ApodViewModel = hiltViewModel(),
 ) {
@@ -52,7 +52,7 @@ private fun ApodScreenContent(
     state: ApodState,
     onIntent: (ApodIntent) -> Unit,
     onArchiveClick: () -> Unit,
-    onImageClick: (String) -> Unit,
+    onImageClick: (imageUrl: String, hdImageUrl: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

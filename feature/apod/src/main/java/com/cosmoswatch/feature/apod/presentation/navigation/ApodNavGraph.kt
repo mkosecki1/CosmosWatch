@@ -48,7 +48,7 @@ fun NavGraphBuilder.apodNavGraph(navController: NavController) {
     composable<ApodRoute> {
         ApodScreen(
             onArchiveClick = { navController.navigate(ApodArchiveRoute) },
-            onImageClick = { imageUrl -> navController.navigate(ApodImageViewerRoute(imageUrl)) },
+            onImageClick = { imageUrl, hdImageUrl -> navController.navigate(ApodImageViewerRoute(imageUrl, hdImageUrl)) },
         )
     }
     composable<ApodArchiveRoute>(
@@ -70,7 +70,7 @@ fun NavGraphBuilder.apodNavGraph(navController: NavController) {
     ) {
         ApodArchiveDetailScreen(
             onBackClick = navController::popBackStack,
-            onImageClick = { imageUrl -> navController.navigate(ApodImageViewerRoute(imageUrl)) },
+            onImageClick = { imageUrl, hdImageUrl -> navController.navigate(ApodImageViewerRoute(imageUrl, hdImageUrl)) },
         )
     }
     composable<ApodImageViewerRoute>(
@@ -82,6 +82,7 @@ fun NavGraphBuilder.apodNavGraph(navController: NavController) {
         val route = backStackEntry.toRoute<ApodImageViewerRoute>()
         ApodImageViewerScreen(
             imageUrl = route.imageUrl,
+            hdImageUrl = route.hdImageUrl,
             onBackClick = navController::popBackStack,
         )
     }

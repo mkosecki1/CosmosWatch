@@ -29,15 +29,17 @@ fun CosmosWatchAsyncImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     placeholderColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    fallbackModel: Any? = null,
 ) {
     val context = LocalPlatformContext.current
-    val request = remember(model) {
+    var currentModel by remember(model, fallbackModel) { mutableStateOf(model) }
+    val request = remember(currentModel) {
         ImageRequest.Builder(context)
-            .data(model)
+            .data(currentModel)
             .crossfade(true)
             .build()
     }
-    var isLoading by remember(model) { mutableStateOf(true) }
+    var isLoading by remember(currentModel) { mutableStateOf(true) }
 
     Box(modifier = modifier.background(color = placeholderColor)) {
         AsyncImage(
@@ -46,7 +48,11 @@ fun CosmosWatchAsyncImage(
             modifier = Modifier.fillMaxSize(),
             contentScale = contentScale,
             onState = { state ->
-                isLoading = state !is AsyncImagePainter.State.Success && state !is AsyncImagePainter.State.Error
+                if (state is AsyncImagePainter.State.Error && fallbackModel != null && currentModel != fallbackModel) {
+                    currentModel = fallbackModel
+                } else {
+                    isLoading = state !is AsyncImagePainter.State.Success && state !is AsyncImagePainter.State.Error
+                }
             },
         )
         if (isLoading) {

@@ -30,7 +30,7 @@ import com.cosmoswatch.feature.apod.presentation.common.ApodContent
 @Composable
 fun ApodArchiveDetailScreen(
     onBackClick: () -> Unit,
-    onImageClick: (String) -> Unit,
+    onImageClick: (imageUrl: String, hdImageUrl: String?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ApodArchiveDetailViewModel = hiltViewModel(),
 ) {
@@ -49,7 +49,7 @@ fun ApodArchiveDetailScreen(
 private fun ApodArchiveDetailScreenContent(
     state: ApodArchiveDetailState,
     onBackClick: () -> Unit,
-    onImageClick: (String) -> Unit,
+    onImageClick: (imageUrl: String, hdImageUrl: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(

@@ -25,7 +25,12 @@ import com.cosmoswatch.core.ui.component.CosmosWatchAsyncImage
 import com.cosmoswatch.feature.apod.R
 
 @Composable
-fun ApodImageViewerScreen(imageUrl: String, onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+fun ApodImageViewerScreen(
+    imageUrl: String,
+    hdImageUrl: String?,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val activity = LocalContext.current.findActivity()
     DisposableEffect(activity) {
         val previousOrientation = activity?.requestedOrientation
@@ -37,7 +42,8 @@ fun ApodImageViewerScreen(imageUrl: String, onBackClick: () -> Unit, modifier: M
 
     Box(modifier = modifier.fillMaxSize().background(Color.Black)) {
         CosmosWatchAsyncImage(
-            model = imageUrl,
+            model = hdImageUrl ?: imageUrl,
+            fallbackModel = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Fit,
             placeholderColor = Color.Black,

@@ -65,7 +65,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun ApodContent(
     apod: ApodDomain,
-    onImageClick: (String) -> Unit,
+    onImageClick: (imageUrl: String, hdImageUrl: String?) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
     showTodayBadge: Boolean = false,
@@ -83,16 +83,15 @@ internal fun ApodContent(
         Box {
             when {
                 apod.mediaType == ApodMediaType.IMAGE -> {
-                    val fullImageUrl = apod.hdImageUrl ?: apod.imageUrl
                     Box {
                         CosmosWatchAsyncImage(
-                            model = fullImageUrl,
+                            model = apod.imageUrl,
                             contentDescription = apod.title,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(4f / 3f)
                                 .clip(MaterialTheme.shapes.large)
-                                .clickable { onImageClick(fullImageUrl) },
+                                .clickable { onImageClick(apod.imageUrl, apod.hdImageUrl) },
                         )
                         if(showTodayBadge) {
                             TodayBadge(Modifier.align(Alignment.TopStart).padding(12.dp))
