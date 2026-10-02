@@ -14,7 +14,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
 
-private const val NASA_BASE_URL = "https://api.nasa.gov/"
+private const val NASA_HOST = "api.nasa.gov"
+private const val NASA_BASE_URL = "https://$NASA_HOST/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,15 +31,15 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providesApiKeyInterceptor(): Interceptor = Interceptor { chain ->
-        val requestWithKey = chain.request().let { request ->
-            request.newBuilder()
-                .url(
-                    request.url.newBuilder()
-                        .addQueryParameter("api_key", BuildConfig.NASA_API_KEY)
-                        .build(),
-                )
-                .build()
-        }
+        val request = chain.request()
+        if (request.url.host != NASA_HOST) return@Interceptor chain.proceed(request)
+        val requestWithKey = request.newBuilder()
+            .url(
+                request.url.newBuilder()
+                    .addQueryParameter("api_key", BuildConfig.NASA_API_KEY)
+                    .build(),
+            )
+            .build()
         chain.proceed(requestWithKey)
     }
 

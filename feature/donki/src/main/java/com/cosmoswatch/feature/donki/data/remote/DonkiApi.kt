@@ -4,19 +4,19 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface DonkiApi {
-    @GET("DONKI/FLR")
+    @GET("get/FLR")
     suspend fun getFlares(
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
     ): List<FlrDto>
 
-    @GET("DONKI/CME")
+    @GET("get/CME")
     suspend fun getCmes(
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
     ): List<CmeDto>
 
-    @GET("DONKI/GST")
+    @GET("get/GST")
     suspend fun getStorms(
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,

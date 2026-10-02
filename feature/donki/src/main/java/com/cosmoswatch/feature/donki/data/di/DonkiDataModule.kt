@@ -15,13 +15,16 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
+private const val DONKI_BASE_URL = "https://ccmc.gsfc.nasa.gov/DONKI-API/"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object DonkiDataModule {
 
     @Provides
     @Singleton
-    fun providesDonkiApi(retrofit: Retrofit): DonkiApi = retrofit.create(DonkiApi::class.java)
+    fun providesDonkiApi(retrofit: Retrofit): DonkiApi =
+        retrofit.newBuilder().baseUrl(DONKI_BASE_URL).build().create(DonkiApi::class.java)
 
     @Provides
     @Singleton
