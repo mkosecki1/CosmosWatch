@@ -12,6 +12,7 @@ import com.cosmoswatch.feature.neows.data.mapper.toArchiveEntity
 import com.cosmoswatch.feature.neows.data.mapper.toDomain
 import com.cosmoswatch.feature.neows.domain.NeoArchiveFilter
 import com.cosmoswatch.feature.neows.domain.NeoDomain
+import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.Clock
@@ -49,6 +50,8 @@ class NeoArchiveRemoteMediator(
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {
+            MediatorResult.Error(e)
+        } catch (e: SerializationException) {
             MediatorResult.Error(e)
         }
     }

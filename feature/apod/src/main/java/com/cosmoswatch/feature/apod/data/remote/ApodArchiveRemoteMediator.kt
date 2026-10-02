@@ -11,6 +11,7 @@ import com.cosmoswatch.feature.apod.data.local.ApodDatabase
 import com.cosmoswatch.feature.apod.data.mapper.toArchiveEntity
 import com.cosmoswatch.feature.apod.domain.APOD_ARCHIVE_START_DATE
 import com.cosmoswatch.feature.apod.domain.ApodArchiveFilter
+import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.Clock
@@ -48,6 +49,8 @@ class ApodArchiveRemoteMediator(
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {
+            MediatorResult.Error(e)
+        } catch (e: SerializationException) {
             MediatorResult.Error(e)
         }
     }

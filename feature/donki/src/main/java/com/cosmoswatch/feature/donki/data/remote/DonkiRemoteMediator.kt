@@ -13,6 +13,7 @@ import com.cosmoswatch.feature.donki.data.mapper.toEntity
 import com.cosmoswatch.feature.donki.domain.DONKI_ARCHIVE_START_DATE
 import com.cosmoswatch.feature.donki.domain.DonkiEventDomain
 import com.cosmoswatch.feature.donki.domain.DonkiTimelineFilter
+import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.Clock
@@ -50,6 +51,8 @@ class DonkiRemoteMediator(
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {
+            MediatorResult.Error(e)
+        } catch (e: SerializationException) {
             MediatorResult.Error(e)
         }
     }
