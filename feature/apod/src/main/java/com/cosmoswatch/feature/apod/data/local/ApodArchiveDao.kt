@@ -9,7 +9,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ApodArchiveDao {
-    @Query("SELECT * FROM apod_archive WHERE(:mediaType IS NULL OR mediaType = :mediaType) ORDER BY date DESC")
+    @Query(
+        "SELECT * FROM apod_archive " +
+            "WHERE (:mediaType IS NULL OR mediaType = :mediaType) " +
+            "AND date NOT IN (SELECT date FROM apod) " +
+            "ORDER BY date DESC",
+    )
     fun pagingSource(mediaType: String?): PagingSource<Int, ApodArchiveEntity>
 
     @Query("SELECT * FROM apod_archive WHERE date = :date")
