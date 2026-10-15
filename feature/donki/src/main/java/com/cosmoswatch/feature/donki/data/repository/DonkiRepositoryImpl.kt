@@ -30,10 +30,11 @@ class DonkiRepositoryImpl @Inject constructor(
         config = PagingConfig(pageSize = TIMELINE_PAGE_SIZE, enablePlaceholders = false),
         remoteMediator = DonkiRemoteMediator(api = api, database = database, clock = clock, filter = filter),
         pagingSourceFactory = {
+            val noTypeSelected = !filter.flaresSelected && !filter.cmesSelected && !filter.stormsSelected
             database.donkiTimelineDao().pagingSource(
-                showFlares = filter.showFlares,
-                showCmes = filter.showCmes,
-                showStorms = filter.showStorms,
+                showFlares = filter.flaresSelected || noTypeSelected,
+                showCmes = filter.cmesSelected || noTypeSelected,
+                showStorms = filter.stormsSelected || noTypeSelected,
                 significantOnly = filter.significantOnly,
                 earthDirectedOnly = filter.earthDirectedOnly,
             )

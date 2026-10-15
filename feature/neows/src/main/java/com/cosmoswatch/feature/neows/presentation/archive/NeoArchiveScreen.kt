@@ -243,7 +243,9 @@ private fun ArchiveList(
             count = archive.itemCount,
             key = { index -> archive.peek(index)?.id ?: "placeholder-$index" },
         ) { index ->
-            archive[index]?.let { neoItem -> NeoTile(neoDomain = neoItem, today = today) }
+            archive[index]?.let {
+                neoItem -> NeoTile(neoDomain = neoItem, today = today, modifier = Modifier.animateItem())
+            }
         }
 
         if (archive.loadState.append is LoadState.Loading) {
