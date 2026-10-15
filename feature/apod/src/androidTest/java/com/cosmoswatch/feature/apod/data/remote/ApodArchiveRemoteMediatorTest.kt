@@ -32,10 +32,12 @@ import java.time.ZoneOffset
 class ApodArchiveRemoteMediatorTest {
 
     private val clock: Clock = Clock.fixed(Instant.parse("2026-09-03T12:00:00Z"), ZoneOffset.UTC)
-    private val requestedEndDates = mutableListOf<String>()
-    private val api = FakeApodApi { _, endDate ->
-        requestedEndDates += endDate
-        listOf(sampleDto(date = endDate))
+    private val today: LocalDate = LocalDate.now(clock)
+    private val requestedPages = mutableListOf<Int>()
+    private val api = FakeApodApi { page, perPage ->
+        requestedPages += page
+        val newestIndex = (page - 1) * perPage
+        (newestIndex until newestIndex + perPage).map { index -> sampleDto(today.minusDays(index.toLong())) }
     }
     private lateinit var database: ApodDatabase
 
@@ -57,12 +59,12 @@ class ApodArchiveRemoteMediatorTest {
         database.close()
     }
 
-    private fun sampleDto(date: String) = ApodDto(
-        date = date,
+    private fun sampleDto(date: LocalDate) = ApodDto(
+        date = date.toString(),
         title = "Title $date",
         explanation = "Explanation",
-        url = "https://example.com/$date.jpg",
-        hdurl = null,
+        url = "https://example.com/$date",
+        hdurl = "https://example.com/$date.jpg",
         mediaType = "image",
         copyright = null,
     )
@@ -70,50 +72,84 @@ class ApodArchiveRemoteMediatorTest {
     private fun mediator(filter: ApodArchiveFilter = ApodArchiveFilter()) =
         ApodArchiveRemoteMediator(api = api, database = database, clock = clock, filter = filter)
 
+    private suspend fun cachedEntry(date: LocalDate) = database.apodArchiveDao().observe(date.toString()).first()
+
     private fun assertSuccess(expectedEndOfPagination: Boolean, result: MediatorResult) {
         assertTrue("expected MediatorResult.Success but was $result", result is MediatorResult.Success)
         assertEquals(expectedEndOfPagination, (result as MediatorResult.Success).endOfPaginationReached)
     }
 
     @Test
-    fun refresh_storesTheNewestWindowAsPageZero() = runTest {
+    fun refresh_storesTheNewestRemotePageAsCachePageZero() = runTest {
         val result = mediator().load(LoadType.REFRESH, emptyPagingState)
 
         assertSuccess(expectedEndOfPagination = false, result = result)
+        assertEquals(listOf(1), requestedPages)
         val remoteKey = database.apodArchiveRemoteKeyDao().getRemoteKey()
         assertEquals(0, remoteKey?.oldestCachedPage)
         assertEquals(0, remoteKey?.newestCachedPage)
-        assertEquals(LocalDate.now(clock).minusDays(30).toString(), remoteKey?.nextEndDate)
+        assertEquals(2, remoteKey?.nextRemotePage)
     }
 
     @Test
-    fun append_continuesFromTheRemoteKeysNextEndDate() = runTest {
+    fun append_continuesFromTheRemoteKeysNextRemotePage() = runTest {
         val remoteMediator = mediator()
         remoteMediator.load(LoadType.REFRESH, emptyPagingState)
-        val nextEndDateAfterRefresh = database.apodArchiveRemoteKeyDao().getRemoteKey()?.nextEndDate
 
         val result = remoteMediator.load(LoadType.APPEND, emptyPagingState)
 
         assertSuccess(expectedEndOfPagination = false, result = result)
-        assertEquals(nextEndDateAfterRefresh, requestedEndDates[1])
+        assertEquals(listOf(1, 2), requestedPages)
         val remoteKey = database.apodArchiveRemoteKeyDao().getRemoteKey()
         assertEquals(0, remoteKey?.oldestCachedPage)
         assertEquals(1, remoteKey?.newestCachedPage)
+        assertEquals(3, remoteKey?.nextRemotePage)
     }
 
     @Test
-    fun endOfPaginationIsReachedOnceTheRangeHitsTheArchiveBoundary() = runTest {
-        val filter = ApodArchiveFilter(startDate = LocalDate.now(clock).minusDays(14))
+    fun refresh_withEndDateStartsOnePageEarlyAndSkipsNewerEntries() = runTest {
+        val endDate = today.minusDays(60)
 
-        val result = mediator(filter).load(LoadType.REFRESH, emptyPagingState)
+        mediator(ApodArchiveFilter(endDate = endDate)).load(LoadType.REFRESH, emptyPagingState)
+
+        assertEquals(listOf(2, 3), requestedPages)
+        assertNull(cachedEntry(endDate.plusDays(1)))
+        assertNotNull(cachedEntry(endDate))
+    }
+
+    @Test
+    fun refresh_keepsFetchingWhenAWholePageIsNewerThanTheEndDate() = runTest {
+        val endDate = today.minusDays(30)
+
+        mediator(ApodArchiveFilter(endDate = endDate)).load(LoadType.REFRESH, emptyPagingState)
+
+        assertEquals(listOf(1, 2), requestedPages)
+        assertNotNull(cachedEntry(endDate))
+    }
+
+    @Test
+    fun endOfPaginationIsReachedOnceAPageHitsTheStartDate() = runTest {
+        val startDate = today.minusDays(14)
+
+        val result = mediator(ApodArchiveFilter(startDate = startDate)).load(LoadType.REFRESH, emptyPagingState)
 
         assertSuccess(expectedEndOfPagination = true, result = result)
-        assertNull(database.apodArchiveRemoteKeyDao().getRemoteKey()?.nextEndDate)
+        assertNull(database.apodArchiveRemoteKeyDao().getRemoteKey()?.nextRemotePage)
+        assertNotNull(cachedEntry(startDate))
+        assertNull(cachedEntry(startDate.minusDays(1)))
+    }
+
+    @Test
+    fun endOfPaginationIsReachedOnAShortLastPage() = runTest {
+        val shortPageApi = FakeApodApi { _, _ -> listOf(sampleDto(today)) }
+        val remoteMediator = ApodArchiveRemoteMediator(shortPageApi, database, clock, ApodArchiveFilter())
+
+        assertSuccess(expectedEndOfPagination = true, result = remoteMediator.load(LoadType.REFRESH, emptyPagingState))
     }
 
     @Test
     fun networkFailureIsReportedAsMediatorError() = runTest {
-        api.rangeError = IOException()
+        api.pageError = IOException()
 
         val result = mediator().load(LoadType.REFRESH, emptyPagingState)
 
@@ -129,11 +165,8 @@ class ApodArchiveRemoteMediatorTest {
         val remoteKey = database.apodArchiveRemoteKeyDao().getRemoteKey()
         assertEquals(1, remoteKey?.oldestCachedPage)
         assertEquals(20, remoteKey?.newestCachedPage)
-        assertEquals(21, requestedEndDates.size)
-
-        val evictedPageEntry = database.apodArchiveDao().observe(requestedEndDates[0]).first()
-        val survivingPageEntry = database.apodArchiveDao().observe(requestedEndDates[20]).first()
-        assertNull(evictedPageEntry)
-        assertNotNull(survivingPageEntry)
+        assertEquals(21, requestedPages.size)
+        assertNull(cachedEntry(today))
+        assertNotNull(cachedEntry(today.minusDays(20L * 25)))
     }
 }

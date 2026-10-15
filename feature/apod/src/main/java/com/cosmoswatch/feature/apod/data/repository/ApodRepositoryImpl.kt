@@ -100,7 +100,8 @@ class ApodRepositoryImpl @Inject constructor(
         var attempt = 0
         while (true) {
             try {
-                return api.getApod()
+                return api.getPage(page = 1, perPage = 1).firstOrNull()
+                    ?: throw IOException("Empty APOD response")
             } catch (e: IOException) {
                 attempt++
                 if (attempt >= MAX_FETCH_ATTEMPTS) throw e

@@ -16,13 +16,16 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
+private const val APOD_BASE_URL = "https://science.nasa.gov/wp-json/wp/v2/"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object ApodDataModule {
 
     @Provides
     @Singleton
-    fun providesApodApi(retrofit: Retrofit): ApodApi = retrofit.create(ApodApi::class.java)
+    fun providesApodApi(retrofit: Retrofit): ApodApi =
+        retrofit.newBuilder().baseUrl(APOD_BASE_URL).build().create(ApodApi::class.java)
 
     @Provides
     @Singleton

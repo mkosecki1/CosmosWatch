@@ -60,7 +60,7 @@ class ApodRepositoryImplTest {
 
     @Test
     fun `no cache and successful fetch emits Success and stores in dao`() = runTest {
-        coEvery { api.getApod() } returns SAMPLE_DTO
+        coEvery { api.getPage(page = 1, perPage = 1) } returns listOf(SAMPLE_DTO)
         val dao = FakeApodDao()
 
         repository(dao).getApod().test {
@@ -80,12 +80,12 @@ class ApodRepositoryImplTest {
             )
             cancelAndIgnoreRemainingEvents()
         }
-        coVerify(exactly = 0) { api.getApod() }
+        coVerify(exactly = 0) { api.getPage(page = 1, perPage = 1) }
     }
 
     @Test
     fun `cache older than TTL triggers refresh and emits fresh data`() = runTest {
-        coEvery { api.getApod() } returns SAMPLE_DTO
+        coEvery { api.getPage(page = 1, perPage = 1) } returns listOf(SAMPLE_DTO)
         val dao = FakeApodDao(initialEntity = sampleEntity(fetchedAt = NOW.minus(Duration.ofHours(13))))
 
         repository(dao).getApod().test {
@@ -96,7 +96,7 @@ class ApodRepositoryImplTest {
 
     @Test
     fun `stale cache with failed refresh falls back to cached data`() = runTest {
-        coEvery { api.getApod() } throws IOException()
+        coEvery { api.getPage(page = 1, perPage = 1) } throws IOException()
         val staleFetchedAt = NOW.minus(Duration.ofHours(13))
         val dao = FakeApodDao(initialEntity = sampleEntity(fetchedAt = staleFetchedAt))
 
@@ -108,7 +108,7 @@ class ApodRepositoryImplTest {
 
     @Test
     fun `no cache and network failure emits Network failure`() = runTest {
-        coEvery { api.getApod() } throws IOException()
+        coEvery { api.getPage(page = 1, perPage = 1) } throws IOException()
         val dao = FakeApodDao()
 
         repository(dao).getApod().test {
@@ -120,25 +120,25 @@ class ApodRepositoryImplTest {
     @Test
     fun `no cache and server error emits Server failure without retrying`() = runTest {
         val httpException = HttpException(Response.error<Any>(500, "".toResponseBody(null)))
-        coEvery { api.getApod() } throws httpException
+        coEvery { api.getPage(page = 1, perPage = 1) } throws httpException
         val dao = FakeApodDao()
 
         repository(dao).getApod().test {
             assertEquals(AppResult.Failure(AppError.Server(500)), awaitItem())
             awaitComplete()
         }
-        coVerify(exactly = 1) { api.getApod() }
+        coVerify(exactly = 1) { api.getPage(page = 1, perPage = 1) }
     }
 
     @Test
     fun `transient network failures are retried before succeeding`() = runTest {
-        coEvery { api.getApod() } throws IOException() andThenThrows IOException() andThen SAMPLE_DTO
+        coEvery { api.getPage(page = 1, perPage = 1) } throws IOException() andThenThrows IOException() andThen listOf(SAMPLE_DTO)
         val dao = FakeApodDao()
 
         repository(dao).getApod().test {
             assertEquals(AppResult.Success(SAMPLE_DTO.toEntity(NOW.toEpochMilli()).toDomain()), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
-        coVerify(exactly = 3) { api.getApod() }
+        coVerify(exactly = 3) { api.getPage(page = 1, perPage = 1) }
     }
 }

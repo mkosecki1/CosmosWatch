@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "apod_archive_remote_key")
 data class ApodArchiveRemoteKeyEntity(
     @PrimaryKey val id: Int = SINGLE_ROW_ID,
-    val nextEndDate: String?,
+    val nextRemotePage: Int?,
     val oldestCachedPage: Int,
     val newestCachedPage: Int,
 ) {

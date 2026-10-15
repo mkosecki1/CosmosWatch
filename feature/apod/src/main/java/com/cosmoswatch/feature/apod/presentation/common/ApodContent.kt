@@ -180,7 +180,7 @@ internal fun ApodContent(
         )
         apod.copyright?.let {
             Text(
-                text = stringResource(R.string.apod_copyright, it.replace("\n", ", ")),
+                text = stringResource(R.string.apod_credit, it.replace("\n", ", ")),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary
             )

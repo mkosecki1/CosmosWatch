@@ -7,7 +7,7 @@
     <string name="apod_error_unknown">Something went wrong. Please try again.</string>
     <string name="apod_retry">Retry</string>
     <string name="apod_watch_video">Watch video</string>
-    <string name="apod_copyright">© %1$s</string>
+    <string name="apod_credit">Credit: %1$s</string>
     <string name="apod_back">Back</string>
     <string name="apod_browse_archive">Browse archive</string>
     <string name="apod_archive_title">APOD Archive</string>

@@ -2,6 +2,8 @@ package com.cosmoswatch.feature.apod.domain
 
 import java.time.LocalDate
 
+private val PLAYABLE_VIDEO_EXTENSIONS = setOf("mp4", "webm", "mov", "m3u8")
+
 data class ApodDomain(
     val date: LocalDate,
     val title: String,
@@ -14,4 +16,5 @@ data class ApodDomain(
 )
 
 fun ApodDomain.isPlayableVideo(): Boolean =
-    mediaType == ApodMediaType.VIDEO && !imageUrl.contains("youtube.com")
+    mediaType == ApodMediaType.VIDEO &&
+        imageUrl.substringBefore('?').substringAfterLast('.', "").lowercase() in PLAYABLE_VIDEO_EXTENSIONS

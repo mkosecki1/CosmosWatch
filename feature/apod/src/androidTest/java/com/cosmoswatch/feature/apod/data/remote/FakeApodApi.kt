@@ -1,15 +1,13 @@
 package com.cosmoswatch.feature.apod.data.remote
 
 class FakeApodApi(
-    private val rangeResponse: (startDate: String, endDate: String) -> List<ApodDto>,
+    private val pageResponse: (page: Int, perPage: Int) -> List<ApodDto>,
 ) : ApodApi {
 
-    var rangeError: Throwable? = null
+    var pageError: Throwable? = null
 
-    override suspend fun getApod(thumbs: Boolean): ApodDto = error("not used by ApodArchiveRemoteMediatorTest")
-
-    override suspend fun getApodRange(startDate: String, endDate: String, thumbs: Boolean): List<ApodDto> {
-        rangeError?.let { throw it }
-        return rangeResponse(startDate, endDate)
+    override suspend fun getPage(page: Int, perPage: Int): List<ApodDto> {
+        pageError?.let { throw it }
+        return pageResponse(page, perPage)
     }
 }
