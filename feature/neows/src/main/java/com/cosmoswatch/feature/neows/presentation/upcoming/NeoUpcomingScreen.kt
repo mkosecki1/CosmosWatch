@@ -15,7 +15,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,16 +25,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cosmoswatch.core.ui.component.ErrorState
+import com.cosmoswatch.core.ui.component.InfoDialogSection
 import com.cosmoswatch.core.ui.component.LoadingState
 import com.cosmoswatch.feature.neows.R
 import com.cosmoswatch.feature.neows.presentation.common.toMessage
@@ -130,30 +128,12 @@ private fun FilterInfoDialog(onDismiss: () -> Unit) {
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterExplanation(stringResource(R.string.neo_info_ld_title), stringResource(R.string.neo_info_ld_body))
-                FilterExplanation(stringResource(R.string.neo_filter_hazardous), stringResource(R.string.neo_info_hazardous_body))
-                FilterExplanation(stringResource(R.string.neo_filter_close), stringResource(R.string.neo_info_close_body))
-                FilterExplanation(stringResource(R.string.neo_filter_large), stringResource(R.string.neo_info_large_body))
-                FilterExplanation(stringResource(R.string.neo_badge_sentry), stringResource(R.string.neo_info_sentry_body))
+                InfoDialogSection(stringResource(R.string.neo_info_ld_title), stringResource(R.string.neo_info_ld_body))
+                InfoDialogSection(stringResource(R.string.neo_filter_hazardous), stringResource(R.string.neo_info_hazardous_body))
+                InfoDialogSection(stringResource(R.string.neo_filter_close), stringResource(R.string.neo_info_close_body))
+                InfoDialogSection(stringResource(R.string.neo_filter_large), stringResource(R.string.neo_info_large_body))
+                InfoDialogSection(stringResource(R.string.neo_badge_sentry), stringResource(R.string.neo_info_sentry_body))
             }
         }
     )
-}
-
-@Composable
-private fun FilterExplanation(title: String, body: String) {
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.primary),
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Text(
-            text = body,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Justify,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-    }
 }

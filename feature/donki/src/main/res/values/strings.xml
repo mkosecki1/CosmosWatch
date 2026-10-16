@@ -9,9 +9,11 @@
     <string name="donki_filter_significant_flares">M/X flares</string>
     <string name="donki_filter_earth_directed">Heading to Earth</string>
     <string name="donki_filter_info_title">Filters</string>
-    <string name="donki_filter_info_types">Flares, CMEs, Storms: show or hide each type of event.</string>
-    <string name="donki_filter_info_significant_flares">M/X flares: only the strongest solar flares. Class M and X flares can cause radio blackouts on Earth\'s dayside.</string>
-    <string name="donki_filter_info_earth_directed">Heading to Earth: only CMEs that NASA\'s model predicts will reach Earth, usually 1–3 days after launch. These can trigger geomagnetic storms.</string>
+    <string name="donki_filter_info_description">About the filters</string>
+    <string name="donki_filter_info_types_title">Flares, CMEs, Storms</string>
+    <string name="donki_filter_info_types_body">Show only the selected event types. With none selected, all types are shown.</string>
+    <string name="donki_filter_info_significant_flares_body">Only the strongest solar flares. Class M and X flares can cause radio blackouts on Earth\'s dayside.</string>
+    <string name="donki_filter_info_earth_directed_body">Only CMEs that NASA\'s model predicts will reach Earth, usually 1–3 days after launch. These can trigger geomagnetic storms.</string>
     <string name="donki_flare_title">Solar flare</string>
     <string name="donki_cme_title">Coronal mass ejection</string>
     <string name="donki_storm_title">Geomagnetic storm</string>

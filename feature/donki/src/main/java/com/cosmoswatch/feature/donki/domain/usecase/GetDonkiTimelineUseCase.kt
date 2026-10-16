@@ -26,13 +26,10 @@ class GetDonkiTimelineUseCase @Inject constructor(
     }
 
     private fun validate(filter: DonkiTimelineFilter): AppError? {
-        val today = LocalDate.now(clock)
-        val start = filter.startDate
         val end = filter.endDate
         return when {
-            end != null && end.isAfter(today) -> AppError.Validation("end_date_in_future")
-            start != null && start.isBefore(DONKI_ARCHIVE_START_DATE) -> AppError.Validation("start_date_before_archive")
-            start != null && end != null && start.isAfter(end) -> AppError.Validation("start_date_after_end_date")
+            end != null && end.isAfter(LocalDate.now(clock)) -> AppError.Validation("end_date_in_future")
+            end != null && end.isBefore(DONKI_ARCHIVE_START_DATE) -> AppError.Validation("end_date_before_archive")
             else -> null
         }
     }

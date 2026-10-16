@@ -32,7 +32,7 @@ class DonkiRemoteMediator(
 
     private val timelineDao = database.donkiTimelineDao()
     private val remoteKeyDao = database.donkiRemoteKeyDao()
-    private val boundaryStartDate = filter.startDate ?: DONKI_ARCHIVE_START_DATE
+    private val boundaryStartDate = DONKI_ARCHIVE_START_DATE
 
     override suspend fun load(
         loadType: LoadType,
