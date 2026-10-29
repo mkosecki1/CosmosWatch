@@ -11,7 +11,6 @@ data class DonkiTimelineEntity(
     val severity: String,
     val linkUrl: String,
     val linkedEventIds: String,
-    val page: Int,
     val flareClassType: String? = null,
     val flareSourceLocation: String? = null,
     val flareActiveRegionNum: Int? = null,

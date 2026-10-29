@@ -34,7 +34,4 @@ interface DonkiTimelineDao {
 
     @Query("DELETE FROM donki_timeline")
     suspend fun clearAll()
-
-    @Query("DELETE FROM donki_timeline WHERE page = :page")
-    suspend fun deletePage(page: Int)
 }

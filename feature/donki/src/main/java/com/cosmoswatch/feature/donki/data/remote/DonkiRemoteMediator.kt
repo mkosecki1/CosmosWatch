@@ -20,7 +20,6 @@ import java.time.Clock
 import java.time.LocalDate
 
 private const val WINDOW_DAYS = 30L
-private const val MAX_CACHED_PAGES = 20
 
 @OptIn(ExperimentalPagingApi::class)
 class DonkiRemoteMediator(
@@ -44,9 +43,8 @@ class DonkiRemoteMediator(
 
         return try {
             val events = fetchRange(range)
-            val page = pageToLoad(loadType, currentKey)
             val endOfPaginationReached = range.start <= boundaryStartDate
-            persistPage(loadType, page, events, range.start, endOfPaginationReached, currentKey)
+            persistPage(loadType, events, range.start, endOfPaginationReached)
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: IOException) {
             MediatorResult.Error(e)
@@ -66,9 +64,6 @@ class DonkiRemoteMediator(
         return flares + cmes + storms
     }
 
-    private fun pageToLoad(loadType: LoadType, currentKey: DonkiRemoteKeyEntity?): Int =
-        if (loadType == LoadType.REFRESH) 0 else (currentKey?.newestCachedPage ?: 0) + 1
-
     private fun rangeToLoad(loadType: LoadType, currentKey: DonkiRemoteKeyEntity?): DateRange? = when (loadType) {
         LoadType.PREPEND -> null
         LoadType.REFRESH -> {
@@ -85,40 +80,19 @@ class DonkiRemoteMediator(
 
     private suspend fun persistPage(
         loadType: LoadType,
-        page: Int,
         events: List<DonkiEventDomain>,
         rangeStart: LocalDate,
         endOfPaginationReached: Boolean,
-        currentKey: DonkiRemoteKeyEntity?,
     ) = database.withTransaction {
         if (loadType == LoadType.REFRESH) {
             timelineDao.clearAll()
         }
-        timelineDao.insertAll(events.map { it.toEntity(page = page) })
-
-        val oldestCachedPageBeforeEviction = if (loadType == LoadType.REFRESH) {
-            page
-        } else {
-            currentKey?.oldestCachedPage ?: page
-        }
-        val oldestCachedPage = evictOldestPageIfOverCapacity(
-            oldestCachedPage = oldestCachedPageBeforeEviction,
-            newestCachedPage = page,
-        )
-
+        timelineDao.insertAll(events.map { it.toEntity() })
         remoteKeyDao.insertOrReplace(
             DonkiRemoteKeyEntity(
                 nextEndDate = if (endOfPaginationReached) null else rangeStart.minusDays(1).toString(),
-                oldestCachedPage = oldestCachedPage,
-                newestCachedPage = page,
             ),
         )
-    }
-
-    private suspend fun evictOldestPageIfOverCapacity(oldestCachedPage: Int, newestCachedPage: Int): Int {
-        if (newestCachedPage - oldestCachedPage + 1 <= MAX_CACHED_PAGES) return oldestCachedPage
-        timelineDao.deletePage(oldestCachedPage)
-        return oldestCachedPage + 1
     }
 
     private data class DateRange(val start: LocalDate, val end: LocalDate)

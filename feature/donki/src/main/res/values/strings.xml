@@ -3,6 +3,7 @@
     <string name="donki_error_unknown">Something went wrong. Please try again.</string>
     <string name="donki_retry">Retry</string>
     <string name="donki_timeline_empty">No space weather events in this range.</string>
+    <string name="donki_clear_filter">Clear filters</string>
     <string name="donki_filter_flares">Flares</string>
     <string name="donki_filter_cmes">CMEs</string>
     <string name="donki_filter_storms">Storms</string>
@@ -25,6 +26,8 @@
     <string name="donki_info_storm_scale_body">NOAA\'s G scale rates geomagnetic storms from G1 (minor) to G5 (extreme). It\'s based on the Kp index, which measures how strongly Earth\'s magnetic field is disturbed on a 0–9 scale: G1 starts at Kp 5, and each level adds one Kp point, up to G5 at Kp 9. Stronger storms push auroras further from the poles and can disrupt satellites, GPS and power grids.</string>
     <string name="donki_stat_peak_time_label">Peak time</string>
     <string name="donki_stat_active_region_label">Active region</string>
+    <string name="donki_stat_duration_label">Duration</string>
+    <string name="donki_stat_related_cmes_label">Related CMEs</string>
     <string name="donki_active_region_value">AR %1$d</string>
     <string name="donki_info_active_region_title">Active Region</string>
     <string name="donki_info_active_region_body">An active region is an area of intense magnetic activity on the Sun, usually visible as a group of sunspots. NOAA gives each one a number when it appears, so flares sharing the same number came from the same spot. A single region can produce many flares over the roughly two weeks it takes to cross the side of the Sun facing Earth.</string>

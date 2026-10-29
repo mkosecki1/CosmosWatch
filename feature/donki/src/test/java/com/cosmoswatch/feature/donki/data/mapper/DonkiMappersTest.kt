@@ -215,7 +215,7 @@ class DonkiMappersTest {
             activeRegionNum = 3664,
         )
 
-        assertEquals(flare, flare.toEntity(page = 2).toDomain())
+        assertEquals(flare, flare.toEntity().toDomain())
     }
 
     @Test
@@ -233,7 +233,7 @@ class DonkiMappersTest {
             forecastKp = 9.0,
         )
 
-        assertEquals(cme, cme.toEntity(page = 0).toDomain())
+        assertEquals(cme, cme.toEntity().toDomain())
     }
 
     @Test
@@ -251,7 +251,7 @@ class DonkiMappersTest {
             forecastKp = null,
         )
 
-        assertEquals(cme, cme.toEntity(page = 0).toDomain())
+        assertEquals(cme, cme.toEntity().toDomain())
     }
 
     @Test
@@ -269,6 +269,6 @@ class DonkiMappersTest {
             peakKp = 9.0,
         )
 
-        assertEquals(storm, storm.toEntity(page = 0).toDomain())
+        assertEquals(storm, storm.toEntity().toDomain())
     }
 }

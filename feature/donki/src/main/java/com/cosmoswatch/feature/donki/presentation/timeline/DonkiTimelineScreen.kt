@@ -45,6 +45,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.cosmoswatch.core.ui.component.ClearFilterChip
 import com.cosmoswatch.core.ui.component.EmptyState
 import com.cosmoswatch.core.ui.component.ErrorState
 import com.cosmoswatch.core.ui.component.InfoDialogSection
@@ -191,6 +192,10 @@ private fun FilterChipsRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        ClearFilterChip(
+            contentDescription = stringResource(R.string.donki_clear_filter),
+            onClick = { onIntent(DonkiTimelineIntent.ClearFilter) }
+        )
         ToggleChip(
             label = stringResource(R.string.donki_filter_flares),
             selected = filter.flaresSelected,

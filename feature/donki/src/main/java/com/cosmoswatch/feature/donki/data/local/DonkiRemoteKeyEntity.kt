@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 data class DonkiRemoteKeyEntity(
     @PrimaryKey val id: Int = SINGLE_ROW_ID,
     val nextEndDate: String?,
-    val oldestCachedPage: Int,
-    val newestCachedPage: Int,
 ) {
     companion object {
         const val SINGLE_ROW_ID = 0

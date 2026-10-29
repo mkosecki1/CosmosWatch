@@ -105,7 +105,7 @@ private fun List<String>.toJoinedString(): String = joinToString(LINKED_EVENT_SE
 
 private fun String.toLinkedEventIds(): List<String> = if (isEmpty()) emptyList() else split(LINKED_EVENT_SEPARATOR)
 
-fun DonkiEventDomain.toEntity(page: Int): DonkiTimelineEntity = when (this) {
+fun DonkiEventDomain.toEntity(): DonkiTimelineEntity = when (this) {
     is DonkiEventDomain.Flare -> DonkiTimelineEntity(
         id = id,
         type = TYPE_FLARE,
@@ -113,7 +113,6 @@ fun DonkiEventDomain.toEntity(page: Int): DonkiTimelineEntity = when (this) {
         severity = severity.name,
         linkUrl = linkUrl,
         linkedEventIds = linkedEventIds.toJoinedString(),
-        page = page,
         flareClassType = classType,
         flareSourceLocation = sourceLocation,
         flareActiveRegionNum = activeRegionNum,
@@ -125,7 +124,6 @@ fun DonkiEventDomain.toEntity(page: Int): DonkiTimelineEntity = when (this) {
         severity = severity.name,
         linkUrl = linkUrl,
         linkedEventIds = linkedEventIds.toJoinedString(),
-        page = page,
         cmeNote = note,
         cmeSpeedKmS = speedKmS,
         cmeIsEarthDirected = isEarthDirected,
@@ -139,7 +137,6 @@ fun DonkiEventDomain.toEntity(page: Int): DonkiTimelineEntity = when (this) {
         severity = severity.name,
         linkUrl = linkUrl,
         linkedEventIds = linkedEventIds.toJoinedString(),
-        page = page,
         stormPeakKp = peakKp,
         stormKpSeriesJson = kpIndexSeries.toJson(),
     )
